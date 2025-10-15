@@ -1,0 +1,8 @@
+
+fastapi==0.111.0
+uvicorn[standard]==0.30.0
+pydub==0.25.1
+numpy==1.26.4
+# Biblioteca TTS local (substituir por engine preferida quando disponível)
+coqui-tts==0.22.0
+soundfile==0.12.1

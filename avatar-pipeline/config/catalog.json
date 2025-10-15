@@ -1,0 +1,21 @@
+
+{
+  "avatars": [
+    {
+      "id": "metahuman_01",
+      "name": "Aline",
+      "project_path": "/proj/AvatarPipeline.uproject",
+      "arkit_compatible": true,
+      "camera_presets": ["closeup_01","mid_01"],
+      "lighting_presets": ["portrait_soft","key_fill_rim"]
+    }
+  ],
+  "camera_presets": [
+    {"id":"closeup_01","desc":"Close facial shot"},
+    {"id":"mid_01","desc":"Meio corpo"}
+  ],
+  "lighting_presets": [
+    {"id":"portrait_soft","desc":"Luz suave, key+fill"},
+    {"id":"key_fill_rim","desc":"Key/Fill/Rim clássico"}
+  ]
+}
