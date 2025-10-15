@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell:*)",
+      "Bash(python:*)",
+      "Bash(xargs ls:*)",
+      "Bash(curl:*)",
+      "Bash(cat:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx eslint:*)",
+      "Bash(dir:*)",
+      "Bash(findstr:*)",
+      "Bash(test:*)",
+      "Bash(where:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv COMECE_AQUI_AGORA.md docs/guias/)",
+      "Bash(mv:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
