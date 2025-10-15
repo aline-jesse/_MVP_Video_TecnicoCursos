@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clear Service Worker</title>
+</head>
+<body>
+    <h1>Limpando Service Worker...</h1>
+    <div id="status">Processando...</div>
+    
+    <script>
+        async function clearServiceWorker() {
+            const statusDiv = document.getElementById('status');
+            
+            try {
+                // 1. Desregistrar todos os service workers
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    console.log('Service Workers encontrados:', registrations.length);
+                    
+                    for (let registration of registrations) {
+                        console.log('Desregistrando:', registration.scope);
+                        await registration.unregister();
+                    }
+                    
+                    statusDiv.innerHTML += '<br>✅ Service Workers desregistrados: ' + registrations.length;
+                }
+                
+                // 2. Limpar todos os caches
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    console.log('Caches encontrados:', cacheNames);
+                    
+                    for (let cacheName of cacheNames) {
+                        console.log('Deletando cache:', cacheName);
+                        await caches.delete(cacheName);
+                    }
+                    
+                    statusDiv.innerHTML += '<br>✅ Caches limpos: ' + cacheNames.length;
+                }
+                
+                // 3. Limpar Local Storage
+                localStorage.clear();
+                sessionStorage.clear();
+                statusDiv.innerHTML += '<br>✅ Storage limpo';
+                
+                // 4. Status final
+                statusDiv.innerHTML += '<br><br><strong>🎉 Limpeza completa!</strong>';
+                statusDiv.innerHTML += '<br>Recarregue a página ou feche o navegador.';
+                
+                // 5. Recarregar após 3 segundos
+                setTimeout(() => {
+                    window.location.reload();
+                }, 3000);
+                
+            } catch (error) {
+                console.error('Erro na limpeza:', error);
+                statusDiv.innerHTML += '<br>❌ Erro: ' + error.message;
+            }
+        }
+        
+        // Executar ao carregar
+        window.addEventListener('load', clearServiceWorker);
+    </script>
+</body>
+</html>

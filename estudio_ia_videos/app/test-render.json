@@ -1,0 +1,14 @@
+{
+  "projectId": "test-project-123",
+  "slides": [
+    {
+      "id": "slide1",
+      "title": "Test Slide",
+      "content": "This is a test slide"
+    }
+  ],
+  "settings": {
+    "resolution": "1920x1080",
+    "fps": 30
+  }
+}

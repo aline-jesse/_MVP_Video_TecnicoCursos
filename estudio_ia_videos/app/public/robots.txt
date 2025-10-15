@@ -1,0 +1,19 @@
+
+# Robots.txt for Estúdio IA de Vídeos
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+Disallow: /private/
+
+# Sitemap
+Sitemap: https://treinx.abacusai.app/sitemap.xml
+
+# Crawl-delay para bots específicos
+User-agent: Googlebot
+Crawl-delay: 0
+
+User-agent: Bingbot
+Crawl-delay: 1

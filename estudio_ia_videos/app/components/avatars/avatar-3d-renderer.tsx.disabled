@@ -1,0 +1,154 @@
+
+
+/**
+ * 🤖 Avatar 3D Renderer Component
+ * Renderização avançada de avatares 3D com Three.js
+ */
+
+'use client';
+
+import React, { useRef, useEffect, useState } from 'react';
+import { useFrame } from '@react-three/fiber';
+import { AnimationMixer, Clock, Group } from 'three';
+import { Html } from '@react-three/drei';
+import * as THREE from 'three';
+
+interface Avatar3DRendererProps {
+  avatar: {
+    id: string;
+    name: string;
+    gender: string;
+    bodyType: string;
+    height: number;
+    topWear: string;
+    bottomWear: string;
+    shoes: string;
+    accessories: string[];
+    defaultExpression: string;
+    skinTone: string;
+    hairColor: string;
+    eyeColor: string;
+    blinkRate: number;
+  };
+  talkingSession: {
+    isPlaying?: boolean;
+    currentTime?: number;
+    duration?: number;
+  };
+  animationSpeed: number;
+}
+
+export default function Avatar3DRenderer({ 
+  avatar, 
+  talkingSession, 
+  animationSpeed 
+}: Avatar3DRendererProps) {
+  const meshRef = useRef<Group>(null);
+  const mixerRef = useRef<AnimationMixer | null>(null);
+  const clockRef = useRef(new Clock());
+  const [lipSyncIntensity, setLipSyncIntensity] = useState(0);
+  const [currentExpression, setCurrentExpression] = useState('neutro');
+
+  // Simulação de sincronização labial
+  useEffect(() => {
+    if (talkingSession?.isPlaying) {
+      const interval = setInterval(() => {
+        // Simular intensidade da fala baseada no áudio
+        const intensity = Math.random() * 0.8 + 0.2; // Entre 0.2 e 1.0
+        setLipSyncIntensity(intensity);
+        
+        // Variar expressões durante a fala
+        const expressions = ['neutro', 'sorriso', 'explicativo', 'pensativo'];
+        if (Math.random() > 0.7) {
+          setCurrentExpression(expressions[Math.floor(Math.random() * expressions.length)]);
+        }
+      }, 100);
+
+      return () => clearInterval(interval);
+    } else {
+      setLipSyncIntensity(0);
+      setCurrentExpression('neutro');
+    }
+  }, [talkingSession?.isPlaying]);
+
+  useFrame((state, delta) => {
+    if (mixerRef.current) {
+      mixerRef.current.update(delta * animationSpeed);
+    }
+
+    // Animação de respiração sutil
+    if (meshRef.current) {
+      meshRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.02;
+      
+      // Movimento sutil da cabeça durante a fala
+      if (talkingSession?.isPlaying) {
+        meshRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 2) * 0.05;
+        meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 1.5) * 0.03;
+      }
+    }
+  });
+
+  return (
+    <group ref={meshRef}>
+      {/* Avatar Placeholder (substituir por modelo 3D real) */}
+      <mesh position={[0, 0, 0]}>
+        <cylinderGeometry args={[0.3, 0.3, 1.8, 8]} />
+        <meshStandardMaterial 
+          color={avatar?.gender === 'feminino' ? '#ff6b9d' : '#4f46e5'} 
+          transparent 
+          opacity={0.8}
+        />
+      </mesh>
+
+      {/* Cabeça */}
+      <mesh position={[0, 1.2, 0]}>
+        <sphereGeometry args={[0.25, 16, 16]} />
+        <meshStandardMaterial 
+          color="#fdbcb4" 
+          transparent 
+          opacity={0.9}
+        />
+      </mesh>
+
+      {/* Boca (com animação de sincronização labial) */}
+      <mesh position={[0, 1.1, 0.2]} scale={[0.1, lipSyncIntensity * 0.1 + 0.02, 0.05]}>
+        <sphereGeometry args={[1, 8, 8]} />
+        <meshStandardMaterial color="#d4504c" />
+      </mesh>
+
+      {/* Olhos */}
+      <mesh position={[-0.08, 1.25, 0.2]}>
+        <sphereGeometry args={[0.03, 8, 8]} />
+        <meshStandardMaterial color="#2563eb" />
+      </mesh>
+      <mesh position={[0.08, 1.25, 0.2]}>
+        <sphereGeometry args={[0.03, 8, 8]} />
+        <meshStandardMaterial color="#2563eb" />
+      </mesh>
+
+      {/* Nome do Avatar */}
+      <Html position={[0, 2, 0]} center>
+        <div className="bg-white/90 backdrop-blur rounded-lg px-3 py-1 shadow-lg">
+          <div className="text-sm font-medium text-gray-800">
+            {avatar?.name || 'Selecione um Avatar'}
+          </div>
+          {talkingSession?.isPlaying && (
+            <div className="text-xs text-green-600 flex items-center space-x-1">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span>Falando...</span>
+            </div>
+          )}
+        </div>
+      </Html>
+
+      {/* Indicador de Expressão */}
+      <Html position={[0, -1.2, 0]} center>
+        <div className="bg-purple-100 rounded-full px-2 py-1">
+          <div className="text-xs text-purple-800 capitalize">
+            {currentExpression}
+          </div>
+        </div>
+      </Html>
+    </group>
+  );
+}

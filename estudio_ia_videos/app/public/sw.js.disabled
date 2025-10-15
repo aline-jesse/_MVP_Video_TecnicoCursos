@@ -1,0 +1,497 @@
+
+/**
+ * 🔧 SERVICE WORKER PARA CACHE E FUNCIONALIDADE OFFLINE
+ * Service Worker para cache inteligente e suporte offline
+ */
+
+const CACHE_NAME = 'estudio-ia-videos-v1';
+const STATIC_CACHE = 'estudio-static-v1';
+const DYNAMIC_CACHE = 'estudio-dynamic-v1';
+
+// Recursos para cache estático (apenas recursos que realmente existem)
+const STATIC_ASSETS = [
+  '/',
+  // Outros recursos serão cacheados dinamicamente conforme necessário
+];
+
+// Estratégias de cache
+const CACHE_STRATEGIES = {
+  CACHE_FIRST: 'cache-first',
+  NETWORK_FIRST: 'network-first',
+  CACHE_ONLY: 'cache-only',
+  NETWORK_ONLY: 'network-only',
+  STALE_WHILE_REVALIDATE: 'stale-while-revalidate'
+};
+
+// Configuração de rotas e suas estratégias
+const ROUTE_STRATEGIES = [
+  {
+    pattern: /\.(css|js|woff|woff2|ttf|eot)$/,
+    strategy: CACHE_STRATEGIES.CACHE_FIRST,
+    cacheName: STATIC_CACHE,
+    maxAge: 30 * 24 * 60 * 60 * 1000 // 30 dias
+  },
+  {
+    pattern: /\.(png|jpg|jpeg|gif|svg|webp)$/,
+    strategy: CACHE_STRATEGIES.CACHE_FIRST,
+    cacheName: STATIC_CACHE,
+    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 dias
+  },
+  {
+    pattern: /^https:\/\/api\./,
+    strategy: CACHE_STRATEGIES.NETWORK_FIRST,
+    cacheName: DYNAMIC_CACHE,
+    maxAge: 5 * 60 * 1000 // 5 minutos
+  },
+  {
+    pattern: /\/api\/projects/,
+    strategy: CACHE_STRATEGIES.NETWORK_FIRST,
+    cacheName: DYNAMIC_CACHE,
+    maxAge: 2 * 60 * 1000 // 2 minutos
+  }
+];
+
+// Instalar Service Worker
+self.addEventListener('install', event => {
+  console.log('[SW] Installing...');
+  
+  event.waitUntil(
+    (async () => {
+      try {
+        // Cache recursos estáticos
+        const staticCache = await caches.open(STATIC_CACHE);
+        await staticCache.addAll(STATIC_ASSETS);
+        
+        console.log('[SW] Static assets cached');
+        
+        // Pular espera e ativar imediatamente
+        await self.skipWaiting();
+      } catch (error) {
+        console.error('[SW] Installation failed:', error);
+      }
+    })()
+  );
+});
+
+// Ativar Service Worker
+self.addEventListener('activate', event => {
+  console.log('[SW] Activating...');
+  
+  event.waitUntil(
+    (async () => {
+      try {
+        // Limpar caches antigos
+        const cacheNames = await caches.keys();
+        const deletePromises = cacheNames
+          .filter(name => name !== STATIC_CACHE && name !== DYNAMIC_CACHE)
+          .map(name => caches.delete(name));
+        
+        await Promise.all(deletePromises);
+        
+        // Assumir controle de todas as abas
+        await self.clients.claim();
+        
+        console.log('[SW] Activated and controlling all clients');
+      } catch (error) {
+        console.error('[SW] Activation failed:', error);
+      }
+    })()
+  );
+});
+
+// Interceptar requests
+self.addEventListener('fetch', event => {
+  const request = event.request;
+  
+  // Ignorar requests não GET
+  if (request.method !== 'GET') {
+    return;
+  }
+  
+  // Ignorar requests de extensão do Chrome
+  if (request.url.startsWith('chrome-extension://')) {
+    return;
+  }
+
+  event.respondWith(handleRequest(request));
+});
+
+// Função principal para lidar com requests
+async function handleRequest(request) {
+  try {
+    const url = new URL(request.url);
+    
+    // Encontrar estratégia adequada
+    const strategy = findStrategy(request);
+    
+    switch (strategy.strategy) {
+      case CACHE_STRATEGIES.CACHE_FIRST:
+        return await cacheFirst(request, strategy);
+      
+      case CACHE_STRATEGIES.NETWORK_FIRST:
+        return await networkFirst(request, strategy);
+      
+      case CACHE_STRATEGIES.STALE_WHILE_REVALIDATE:
+        return await staleWhileRevalidate(request, strategy);
+      
+      case CACHE_STRATEGIES.CACHE_ONLY:
+        return await cacheOnly(request, strategy);
+      
+      case CACHE_STRATEGIES.NETWORK_ONLY:
+        return await networkOnly(request);
+      
+      default:
+        return await networkFirst(request, strategy);
+    }
+  } catch (error) {
+    console.error('[SW] Request handling failed:', error);
+    return await handleOfflineRequest(request);
+  }
+}
+
+// Encontrar estratégia para o request
+function findStrategy(request) {
+  const url = request.url;
+  
+  for (const route of ROUTE_STRATEGIES) {
+    if (route.pattern.test(url)) {
+      return route;
+    }
+  }
+  
+  // Estratégia padrão
+  return {
+    strategy: CACHE_STRATEGIES.NETWORK_FIRST,
+    cacheName: DYNAMIC_CACHE,
+    maxAge: 5 * 60 * 1000
+  };
+}
+
+// Estratégia Cache First
+async function cacheFirst(request, strategy) {
+  const cache = await caches.open(strategy.cacheName);
+  const cached = await cache.match(request);
+  
+  if (cached) {
+    // Verificar se não expirou
+    const cachedTime = new Date(cached.headers.get('sw-cached-time') || 0).getTime();
+    const now = Date.now();
+    
+    if (now - cachedTime < strategy.maxAge) {
+      return cached;
+    }
+  }
+  
+  try {
+    const response = await fetch(request);
+    if (response.status === 200) {
+      await cacheResponse(cache, request, response.clone(), strategy);
+    }
+    return response;
+  } catch (error) {
+    if (cached) {
+      return cached; // Retornar cache expirado como fallback
+    }
+    throw error;
+  }
+}
+
+// Estratégia Network First
+async function networkFirst(request, strategy) {
+  const cache = await caches.open(strategy.cacheName);
+  
+  try {
+    const response = await fetch(request);
+    if (response.status === 200) {
+      await cacheResponse(cache, request, response.clone(), strategy);
+    }
+    return response;
+  } catch (error) {
+    const cached = await cache.match(request);
+    if (cached) {
+      return cached;
+    }
+    throw error;
+  }
+}
+
+// Estratégia Stale While Revalidate
+async function staleWhileRevalidate(request, strategy) {
+  const cache = await caches.open(strategy.cacheName);
+  const cached = await cache.match(request);
+  
+  // Buscar nova versão em background
+  const fetchPromise = fetch(request).then(response => {
+    if (response.status === 200) {
+      cacheResponse(cache, request, response.clone(), strategy);
+    }
+    return response;
+  }).catch(error => {
+    console.warn('[SW] Background fetch failed:', error);
+  });
+  
+  // Retornar cache imediatamente se disponível
+  if (cached) {
+    return cached;
+  }
+  
+  // Se não há cache, aguardar network
+  return await fetchPromise;
+}
+
+// Estratégia Cache Only
+async function cacheOnly(request, strategy) {
+  const cache = await caches.open(strategy.cacheName);
+  const cached = await cache.match(request);
+  
+  if (cached) {
+    return cached;
+  }
+  
+  throw new Error('No cached response available');
+}
+
+// Estratégia Network Only
+async function networkOnly(request) {
+  return await fetch(request);
+}
+
+// Função para cachear response
+async function cacheResponse(cache, request, response, strategy) {
+  // Adicionar timestamp ao cabeçalho
+  const responseWithTimestamp = new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: {
+      ...Object.fromEntries(response.headers.entries()),
+      'sw-cached-time': new Date().toISOString()
+    }
+  });
+  
+  await cache.put(request, responseWithTimestamp);
+}
+
+// Lidar com requests offline
+async function handleOfflineRequest(request) {
+  const url = new URL(request.url);
+  
+  // Para páginas HTML, retornar página offline
+  if (request.headers.get('accept')?.includes('text/html')) {
+    const cache = await caches.open(STATIC_CACHE);
+    const offlinePage = await cache.match('/offline');
+    if (offlinePage) {
+      return offlinePage;
+    }
+  }
+  
+  // Para imagens, retornar placeholder
+  if (request.headers.get('accept')?.includes('image/')) {
+    return new Response(
+      '<svg width="200" height="150" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#f0f0f0"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" font-family="Arial" font-size="14" fill="#999">Imagem indisponível</text></svg>',
+      {
+        headers: {
+          'Content-Type': 'image/svg+xml',
+          'Cache-Control': 'no-cache'
+        }
+      }
+    );
+  }
+  
+  // Para APIs, retornar erro estruturado
+  if (url.pathname.startsWith('/api/')) {
+    return new Response(
+      JSON.stringify({
+        error: 'Offline',
+        message: 'Esta funcionalidade não está disponível offline',
+        offline: true,
+        timestamp: Date.now()
+      }),
+      {
+        status: 503,
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache'
+        }
+      }
+    );
+  }
+  
+  throw new Error('Network request failed and no cached response available');
+}
+
+// Mensagens do cliente
+self.addEventListener('message', event => {
+  const { type, payload } = event.data || {};
+  
+  switch (type) {
+    case 'SKIP_WAITING':
+      self.skipWaiting();
+      break;
+    
+    case 'CACHE_URL':
+      if (payload?.url) {
+        cacheUrl(payload.url);
+      }
+      break;
+    
+    case 'CLEAR_CACHE':
+      clearAllCaches();
+      break;
+    
+    case 'GET_CACHE_STATUS':
+      getCacheStatus().then(status => {
+        event.ports[0]?.postMessage({ type: 'CACHE_STATUS', payload: status });
+      });
+      break;
+  }
+});
+
+// Cachear URL específica
+async function cacheUrl(url) {
+  try {
+    const cache = await caches.open(DYNAMIC_CACHE);
+    await cache.add(url);
+    console.log(`[SW] URL cached: ${url}`);
+  } catch (error) {
+    console.error(`[SW] Failed to cache URL ${url}:`, error);
+  }
+}
+
+// Limpar todos os caches
+async function clearAllCaches() {
+  try {
+    const cacheNames = await caches.keys();
+    await Promise.all(cacheNames.map(name => caches.delete(name)));
+    console.log('[SW] All caches cleared');
+  } catch (error) {
+    console.error('[SW] Failed to clear caches:', error);
+  }
+}
+
+// Obter status do cache
+async function getCacheStatus() {
+  try {
+    const cacheNames = await caches.keys();
+    const status = {};
+    
+    for (const name of cacheNames) {
+      const cache = await caches.open(name);
+      const keys = await cache.keys();
+      status[name] = keys.length;
+    }
+    
+    return status;
+  } catch (error) {
+    console.error('[SW] Failed to get cache status:', error);
+    return {};
+  }
+}
+
+// ========== PUSH NOTIFICATIONS ==========
+
+self.addEventListener('push', event => {
+  console.log('[SW] Push notification received');
+  
+  if (!event.data) {
+    console.warn('[SW] Push event has no data');
+    return;
+  }
+
+  let data;
+  try {
+    data = event.data.json();
+  } catch (error) {
+    data = {
+      title: 'Notificação',
+      body: event.data.text(),
+    };
+  }
+
+  const options = {
+    body: data.body || '',
+    icon: data.icon || '/icon-192.png',
+    badge: data.badge || '/icon-72.png',
+    image: data.image,
+    data: data.data || {},
+    actions: data.actions || [],
+    tag: data.tag || 'default',
+    requireInteraction: data.requireInteraction || false,
+    silent: data.silent || false,
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(data.title || 'Notificação', options)
+  );
+});
+
+// Lidar com cliques em notificações
+self.addEventListener('notificationclick', event => {
+  console.log('[SW] Notification clicked:', event.action);
+  
+  event.notification.close();
+
+  const data = event.notification.data || {};
+  let targetUrl = '/';
+
+  // Determinar URL baseado no tipo e ação
+  if (event.action === 'view' && data.projectId) {
+    targetUrl = `/editor/${data.projectId}`;
+  } else if (event.action === 'download' && data.projectId) {
+    targetUrl = `/projects/${data.projectId}/download`;
+  } else if (event.action === 'publish' && data.projectId) {
+    targetUrl = `/projects/${data.projectId}/publish`;
+  } else if (event.action === 'upgrade') {
+    targetUrl = '/pricing';
+  } else if (data.type === 'mention' || data.type === 'approval') {
+    targetUrl = `/editor/${data.projectId}`;
+  }
+
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
+      // Verificar se já existe uma janela aberta
+      for (const client of clientList) {
+        if (client.url === targetUrl && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      
+      // Abrir nova janela
+      if (clients.openWindow) {
+        return clients.openWindow(targetUrl);
+      }
+    })
+  );
+});
+
+// Lidar com fechamento de notificações
+self.addEventListener('notificationclose', event => {
+  console.log('[SW] Notification closed:', event.notification.tag);
+});
+
+// ========== BACKGROUND SYNC ==========
+
+self.addEventListener('sync', event => {
+  console.log('[SW] Background sync:', event.tag);
+  
+  if (event.tag === 'sync-projects') {
+    event.waitUntil(syncProjects());
+  }
+});
+
+async function syncProjects() {
+  try {
+    console.log('[SW] Syncing projects in background...');
+    
+    // Buscar operações pendentes do IndexedDB
+    // e sincronizar com o servidor
+    
+    // Por enquanto, apenas log
+    console.log('[SW] Background sync completed');
+  } catch (error) {
+    console.error('[SW] Background sync failed:', error);
+    throw error; // Retry
+  }
+}
+
+// Log de informações do SW
+console.log('[SW] Service Worker loaded and ready with Push & Sync support');

@@ -1,0 +1,12 @@
+
+> dev
+> next dev
+
+  ▲ Next.js 14.2.28
+  - Local:        http://localhost:3001
+  - Environments: .env.local, .env
+  - Experiments (use with caution):
+    · outputFileTracingRoot
+
+ ✓ Starting...
+[?25h

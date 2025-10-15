@@ -1,0 +1,45 @@
+{
+  "projectId": "test-project-render-start",
+  "timeline": {
+    "totalDuration": 30,
+    "scenes": [
+      {
+        "id": "scene1",
+        "duration": 10,
+        "narrationText": "Bem-vindos ao treinamento de segurança do trabalho NR-12",
+        "selectedVoice": "pt-BR-Neural2-A",
+        "narrationSpeed": 1.0,
+        "narrationPitch": 0,
+        "narrationVolume": 0,
+        "audio": {
+          "backgroundMusic": "/audio/background.mp3"
+        }
+      },
+      {
+        "id": "scene2", 
+        "duration": 10,
+        "narrationText": "Vamos aprender sobre os equipamentos de proteção individual",
+        "selectedVoice": "pt-BR-Neural2-A",
+        "narrationSpeed": 1.0,
+        "narrationPitch": 0,
+        "narrationVolume": 0
+      },
+      {
+        "id": "scene3",
+        "duration": 10,
+        "narrationText": "Lembre-se sempre de seguir as normas de segurança",
+        "selectedVoice": "pt-BR-Neural2-A",
+        "narrationSpeed": 1.0,
+        "narrationPitch": 0,
+        "narrationVolume": 0
+      }
+    ]
+  },
+  "options": {
+    "quality": "high",
+    "format": "mp4",
+    "resolution": "1080p",
+    "fps": 30
+  },
+  "generateTTS": true
+}

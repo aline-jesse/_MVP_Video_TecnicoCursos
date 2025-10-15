@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - Estúdio IA de Vídeos</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .container {
+            text-align: center;
+            max-width: 400px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+        h1 {
+            margin: 0 0 10px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        p {
+            margin: 0 0 30px;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        .button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .features {
+            margin-top: 30px;
+            text-align: left;
+        }
+        .feature {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        .feature::before {
+            content: "✓";
+            margin-right: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">📱</div>
+        <h1>Modo Offline</h1>
+        <p>Você está offline, mas ainda pode usar muitas funcionalidades do Estúdio IA!</p>
+        
+        <div class="features">
+            <div class="feature">Projetos salvos localmente</div>
+            <div class="feature">Templates em cache</div>
+            <div class="feature">Editor de vídeo básico</div>
+            <div class="feature">Sincronização automática quando voltar online</div>
+        </div>
+        
+        <a href="/" class="button">Continuar Offline</a>
+    </div>
+
+    <script>
+        // Verificar quando voltar online
+        window.addEventListener('online', () => {
+            location.reload();
+        });
+
+        // Atualizar status de conectividade
+        function updateConnectionStatus() {
+            if (navigator.onLine) {
+                location.href = '/';
+            }
+        }
+
+        // Verificar periodicamente
+        setInterval(updateConnectionStatus, 5000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avatar 3D Studio - Dashboard Ultra v3.0</title>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --info-color: #3498db;
+            --bg-light: #ecf0f1;
+            --text-dark: #2c3e50;
+            --border-radius: 15px;
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --bg-light: #1a1a2e;
+            --text-dark: #eee;
+            --primary-color: #4a5fd8;
+            --secondary-color: #5a3f7a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header .badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .realtime-indicator {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(46, 204, 113, 0.2);
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 2px solid #2ecc71;
+        }
+
+        .realtime-dot {
+            width: 12px;
+            height: 12px;
+            background: #2ecc71;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, var(--info-color), #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-success { background: linear-gradient(45deg, var(--success-color), #27ae60); }
+        .btn-danger { background: linear-gradient(45deg, var(--danger-color), #c0392b); }
+        .btn-warning { background: linear-gradient(45deg, var(--warning-color), #e67e22); }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+        }
+
+        .search-box, .filter-select {
+            padding: 12px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.95);
+            font-size: 1em;
+        }
+
+        .search-box { width: 350px; }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-btn {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            border: 2px solid transparent;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .tab-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .data-table th:hover {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .data-table tr:hover {
+            background-color: rgba(103, 126, 234, 0.05);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .status-active {
+            background: #d5f4e6;
+            color: #27ae60;
+        }
+
+        .status-inactive {
+            background: #fadbd8;
+            color: #c0392b;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 40px;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            padding: 20px 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: none;
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(400px); }
+            to { transform: translateX(0); }
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        .toast.success { border-left: 5px solid var(--success-color); }
+        .toast.error { border-left: 5px solid var(--danger-color); }
+        .toast.info { border-left: 5px solid var(--info-color); }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+            border-radius: var(--border-radius);
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-size: 3em;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+
+        .activity-log {
+            max-height: 400px;
+            overflow-y: auto;
+            background: rgba(255,255,255,0.95);
+            border-radius: var(--border-radius);
+            padding: 20px;
+        }
+
+        .activity-item {
+            padding: 12px;
+            border-left: 3px solid var(--info-color);
+            margin-bottom: 10px;
+            background: rgba(52, 152, 219, 0.05);
+            border-radius: 5px;
+        }
+
+        .activity-time {
+            color: #7f8c8d;
+            font-size: 0.85em;
+        }
+
+        .alert-banner {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 15px 30px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-edit, .btn-delete {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-edit {
+            background: var(--info-color);
+            color: white;
+        }
+
+        .btn-delete {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top: 5px solid white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2em; }
+            .controls { flex-direction: column; width: 100%; }
+            .search-box { width: 100%; }
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎬 Avatar 3D Studio <span class="badge">ULTRA v3.0</span></h1>
+            <p style="color: rgba(255,255,255,0.9); font-size: 1.2em;">Dashboard Avançado com Realtime, CRUD Completo e Métricas Históricas</p>
+            
+            <div class="realtime-indicator">
+                <div class="realtime-dot"></div>
+                <span style="color: white; font-weight: bold;">Realtime Ativo</span>
+            </div>
+
+            <div class="controls">
+                <button class="btn" onclick="refreshAll()">🔄 Atualizar Tudo</button>
+                <button class="btn btn-success" onclick="openAddModal()">➕ Adicionar Avatar</button>
+                <button class="btn btn-success" onclick="openAddVoiceModal()">🎤 Adicionar Voz</button>
+                <button class="btn btn-warning" onclick="exportToPDF()">📄 Exportar PDF</button>
+                <button class="btn btn-warning" onclick="exportToCSV()">📊 Exportar CSV</button>
+                <button class="theme-toggle" onclick="toggleTheme()">🌓 Tema</button>
+                
+                <input type="text" id="searchBox" class="search-box" placeholder="🔍 Buscar avatar ou voz..." oninput="applyFilters()">
+                
+                <select id="filterGender" class="filter-select" onchange="applyFilters()">
+                    <option value="">Todos os Gêneros</option>
+                    <option value="male">Masculino</option>
+                    <option value="female">Feminino</option>
+                </select>
+
+                <select id="filterStatus" class="filter-select" onchange="applyFilters()">
+                    <option value="">Todos os Status</option>
+                    <option value="active">Apenas Ativos</option>
+                    <option value="inactive">Apenas Inativos</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('overview')">📊 Visão Geral</button>
+            <button class="tab-btn" onclick="switchTab('avatars')">🎭 Avatares</button>
+            <button class="tab-btn" onclick="switchTab('voices')">🎤 Vozes</button>
+            <button class="tab-btn" onclick="switchTab('analytics')">📈 Analytics</button>
+            <button class="tab-btn" onclick="switchTab('history')">⏱️ Histórico</button>
+            <button class="tab-btn" onclick="switchTab('alerts')">🔔 Alertas</button>
+        </div>
+
+        <!-- Tab: Overview -->
+        <div id="tab-overview" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalAvatars">0</div>
+                    <div class="stat-label">Avatares Totais</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalVoices">0</div>
+                    <div class="stat-label">Vozes Totais</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="activeAvatars">0</div>
+                    <div class="stat-label">Avatares Ativos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalRenders">0</div>
+                    <div class="stat-label">Renders Totais</div>
+                </div>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <h3>📊 Distribuição de Avatares</h3>
+                    <div class="chart-container">
+                        <canvas id="avatarGenderChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🎤 Distribuição de Vozes</h3>
+                    <div class="chart-container">
+                        <canvas id="voiceLanguageChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📝 Atividade Recente</h3>
+                    <div class="activity-log" id="activityLog"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Avatars -->
+        <div id="tab-avatars" class="tab-content">
+            <div class="card">
+                <h3>🎭 Gerenciamento de Avatares</h3>
+                <div style="overflow-x: auto;">
+                    <table class="data-table" id="avatarsTable">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable('avatars', 'display_name')">Nome ▼</th>
+                                <th onclick="sortTable('avatars', 'gender')">Gênero ▼</th>
+                                <th onclick="sortTable('avatars', 'avatar_type')">Tipo ▼</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="avatarsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Voices -->
+        <div id="tab-voices" class="tab-content">
+            <div class="card">
+                <h3>🎤 Gerenciamento de Vozes</h3>
+                <div style="overflow-x: auto;">
+                    <table class="data-table" id="voicesTable">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable('voices', 'display_name')">Nome ▼</th>
+                                <th onclick="sortTable('voices', 'gender')">Gênero ▼</th>
+                                <th onclick="sortTable('voices', 'language')">Idioma ▼</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="voicesTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Analytics -->
+        <div id="tab-analytics" class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <h3>📈 Uso de Avatares por Tipo</h3>
+                    <div class="chart-container">
+                        <canvas id="avatarTypeChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📊 Estatísticas de Performance</h3>
+                    <div class="chart-container">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: History -->
+        <div id="tab-history" class="tab-content">
+            <div class="card">
+                <h3>⏱️ Histórico de Métricas</h3>
+                <div class="chart-container" style="height: 400px;">
+                    <canvas id="historyChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 20px;">
+                <h3>📊 Métricas dos Últimos 30 Dias</h3>
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Alerts -->
+        <div id="tab-alerts" class="tab-content">
+            <div id="alertsContainer"></div>
+            
+            <div class="card" style="margin-top: 20px;">
+                <h3>🔔 Configurar Novos Alertas</h3>
+                <div class="form-group">
+                    <label>Tipo de Alerta</label>
+                    <select id="alertType" class="filter-select">
+                        <option value="avatar_limit">Limite de Avatares</option>
+                        <option value="voice_limit">Limite de Vozes</option>
+                        <option value="render_failure">Falha de Render</option>
+                        <option value="low_storage">Armazenamento Baixo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Valor Limite</label>
+                    <input type="number" id="alertThreshold" placeholder="Ex: 100">
+                </div>
+                <button class="btn btn-success" onclick="createAlert()">Criar Alerta</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Add/Edit Avatar -->
+    <div id="avatarModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="avatarModalTitle">Adicionar Avatar</h2>
+                <span class="close" onclick="closeModal('avatarModal')">&times;</span>
+            </div>
+            <form id="avatarForm">
+                <input type="hidden" id="avatarId">
+                <div class="form-group">
+                    <label>Nome de Exibição</label>
+                    <input type="text" id="avatarName" required>
+                </div>
+                <div class="form-group">
+                    <label>Gênero</label>
+                    <select id="avatarGender" required>
+                        <option value="male">Masculino</option>
+                        <option value="female">Feminino</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Avatar</label>
+                    <select id="avatarType" required>
+                        <option value="professional">Profissional</option>
+                        <option value="realistic">Realista</option>
+                        <option value="cartoon">Cartoon</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="avatarActive" checked>
+                        Avatar Ativo
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-success">Salvar Avatar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Add/Edit Voice -->
+    <div id="voiceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="voiceModalTitle">Adicionar Voz</h2>
+                <span class="close" onclick="closeModal('voiceModal')">&times;</span>
+            </div>
+            <form id="voiceForm">
+                <input type="hidden" id="voiceId">
+                <div class="form-group">
+                    <label>Nome de Exibição</label>
+                    <input type="text" id="voiceName" required>
+                </div>
+                <div class="form-group">
+                    <label>Gênero</label>
+                    <select id="voiceGender" required>
+                        <option value="male">Masculino</option>
+                        <option value="female">Feminino</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Idioma</label>
+                    <select id="voiceLanguage" required>
+                        <option value="pt-BR">Português (Brasil)</option>
+                        <option value="en-US">Inglês (EUA)</option>
+                        <option value="es-ES">Espanhol</option>
+                        <option value="fr-FR">Francês</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="voiceActive" checked>
+                        Voz Ativa
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-success">Salvar Voz</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner">
+        <div class="spinner"></div>
+        <p style="color: white; margin-top: 20px;">Carregando...</p>
+    </div>
+
+    <script>
+        // ==================== CONFIGURAÇÃO ====================
+        const SUPABASE_URL = 'https://ofhzrdiadxigrvmrhaiz.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9maHpyZGlhZHhpZ3J2bXJoYWl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk3MTE3NjEsImV4cCI6MjA3NTI4Nzc2MX0.u-F5m9lvYc1lx9aA-MoTZqCAa83QHGVk8uTh-_KPfCQ';
+        
+        // Inicializar cliente Supabase
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ==================== ESTADO GLOBAL ====================
+        let avatarsData = [];
+        let voicesData = [];
+        let systemStats = [];
+        let activityLog = [];
+        let charts = {};
+        let realtimeChannel = null;
+        let historyData = [];
+        let alerts = [];
+
+        // ==================== REALTIME SUPABASE ====================
+        function setupRealtime() {
+            logActivity('🔌 Conectando ao Realtime...');
+
+            // Canal para avatares
+            realtimeChannel = supabase
+                .channel('db-changes')
+                .on('postgres_changes', 
+                    { event: '*', schema: 'public', table: 'avatar_models' }, 
+                    (payload) => {
+                        logActivity(`🔄 Avatar ${payload.eventType}: ${payload.new?.display_name || payload.old?.display_name}`);
+                        loadAvatars();
+                    }
+                )
+                .on('postgres_changes',
+                    { event: '*', schema: 'public', table: 'voice_profiles' },
+                    (payload) => {
+                        logActivity(`🎤 Voz ${payload.eventType}: ${payload.new?.display_name || payload.old?.display_name}`);
+                        loadVoices();
+                    }
+                )
+                .subscribe((status) => {
+                    if (status === 'SUBSCRIBED') {
+                        logActivity('✅ Realtime conectado!');
+                        showToast('Realtime ativado com sucesso!', 'success');
+                    }
+                });
+        }
+
+        // ==================== FUNÇÕES DE DADOS ====================
+        async function loadAvatars() {
+            try {
+                const { data, error } = await supabase
+                    .from('avatar_models')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                avatarsData = data || [];
+                updateAvatarStats();
+                renderAvatarsTable();
+                updateCharts();
+                logActivity(`📥 ${avatarsData.length} avatares carregados`);
+            } catch (error) {
+                showToast('Erro ao carregar avatares: ' + error.message, 'error');
+            }
+        }
+
+        async function loadVoices() {
+            try {
+                const { data, error } = await supabase
+                    .from('voice_profiles')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                voicesData = data || [];
+                updateVoiceStats();
+                renderVoicesTable();
+                updateCharts();
+                logActivity(`📥 ${voicesData.length} vozes carregadas`);
+            } catch (error) {
+                showToast('Erro ao carregar vozes: ' + error.message, 'error');
+            }
+        }
+
+        async function loadSystemStats() {
+            try {
+                const { data, error } = await supabase
+                    .from('system_stats')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .limit(100);
+
+                if (error) throw error;
+
+                systemStats = data || [];
+                historyData = data || [];
+                updateHistoryChart();
+                logActivity(`📊 Estatísticas carregadas`);
+            } catch (error) {
+                console.error('Erro ao carregar stats:', error);
+            }
+        }
+
+        // ==================== CRUD OPERATIONS ====================
+        async function saveAvatar(event) {
+            event.preventDefault();
+            showLoading(true);
+
+            const avatarData = {
+                display_name: document.getElementById('avatarName').value,
+                gender: document.getElementById('avatarGender').value,
+                avatar_type: document.getElementById('avatarType').value,
+                is_active: document.getElementById('avatarActive').checked
+            };
+
+            const avatarId = document.getElementById('avatarId').value;
+
+            try {
+                let result;
+                if (avatarId) {
+                    // Update
+                    result = await supabase
+                        .from('avatar_models')
+                        .update(avatarData)
+                        .eq('id', avatarId);
+                } else {
+                    // Insert
+                    result = await supabase
+                        .from('avatar_models')
+                        .insert([avatarData]);
+                }
+
+                if (result.error) throw result.error;
+
+                showToast(`Avatar ${avatarId ? 'atualizado' : 'criado'} com sucesso!`, 'success');
+                closeModal('avatarModal');
+                loadAvatars();
+            } catch (error) {
+                showToast('Erro: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function saveVoice(event) {
+            event.preventDefault();
+            showLoading(true);
+
+            const voiceData = {
+                display_name: document.getElementById('voiceName').value,
+                gender: document.getElementById('voiceGender').value,
+                language: document.getElementById('voiceLanguage').value,
+                is_active: document.getElementById('voiceActive').checked
+            };
+
+            const voiceId = document.getElementById('voiceId').value;
+
+            try {
+                let result;
+                if (voiceId) {
+                    result = await supabase
+                        .from('voice_profiles')
+                        .update(voiceData)
+                        .eq('id', voiceId);
+                } else {
+                    result = await supabase
+                        .from('voice_profiles')
+                        .insert([voiceData]);
+                }
+
+                if (result.error) throw result.error;
+
+                showToast(`Voz ${voiceId ? 'atualizada' : 'criada'} com sucesso!`, 'success');
+                closeModal('voiceModal');
+                loadVoices();
+            } catch (error) {
+                showToast('Erro: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function deleteAvatar(id, name) {
+            if (!confirm(`Tem certeza que deseja excluir o avatar "${name}"?`)) return;
+
+            showLoading(true);
+            try {
+                const { error } = await supabase
+                    .from('avatar_models')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                showToast('Avatar excluído com sucesso!', 'success');
+                loadAvatars();
+            } catch (error) {
+                showToast('Erro ao excluir: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function deleteVoice(id, name) {
+            if (!confirm(`Tem certeza que deseja excluir a voz "${name}"?`)) return;
+
+            showLoading(true);
+            try {
+                const { error } = await supabase
+                    .from('voice_profiles')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                showToast('Voz excluída com sucesso!', 'success');
+                loadVoices();
+            } catch (error) {
+                showToast('Erro ao excluir: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // ==================== UI FUNCTIONS ====================
+        function renderAvatarsTable() {
+            const tbody = document.getElementById('avatarsTableBody');
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const filterGender = document.getElementById('filterGender').value;
+            const filterStatus = document.getElementById('filterStatus').value;
+
+            let filtered = avatarsData.filter(avatar => {
+                const matchesSearch = avatar.display_name.toLowerCase().includes(searchTerm);
+                const matchesGender = !filterGender || avatar.gender === filterGender;
+                const matchesStatus = !filterStatus || 
+                    (filterStatus === 'active' && avatar.is_active) ||
+                    (filterStatus === 'inactive' && !avatar.is_active);
+                return matchesSearch && matchesGender && matchesStatus;
+            });
+
+            tbody.innerHTML = filtered.map(avatar => `
+                <tr>
+                    <td><strong>${avatar.display_name}</strong></td>
+                    <td>${avatar.gender === 'male' ? '👨 Masculino' : '👩 Feminino'}</td>
+                    <td>${avatar.avatar_type || 'N/A'}</td>
+                    <td>
+                        <span class="status-badge ${avatar.is_active ? 'status-active' : 'status-inactive'}">
+                            ${avatar.is_active ? '✓ Ativo' : '✗ Inativo'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-edit" onclick='editAvatar(${JSON.stringify(avatar)})'>✏️ Editar</button>
+                            <button class="btn-delete" onclick="deleteAvatar('${avatar.id}', '${avatar.display_name}')">🗑️ Excluir</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderVoicesTable() {
+            const tbody = document.getElementById('voicesTableBody');
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const filterGender = document.getElementById('filterGender').value;
+            const filterStatus = document.getElementById('filterStatus').value;
+
+            let filtered = voicesData.filter(voice => {
+                const matchesSearch = voice.display_name.toLowerCase().includes(searchTerm);
+                const matchesGender = !filterGender || voice.gender === filterGender;
+                const matchesStatus = !filterStatus || 
+                    (filterStatus === 'active' && voice.is_active) ||
+                    (filterStatus === 'inactive' && !voice.is_active);
+                return matchesSearch && matchesGender && matchesStatus;
+            });
+
+            tbody.innerHTML = filtered.map(voice => `
+                <tr>
+                    <td><strong>${voice.display_name}</strong></td>
+                    <td>${voice.gender === 'male' ? '👨 Masculino' : '👩 Feminino'}</td>
+                    <td>${voice.language || 'N/A'}</td>
+                    <td>
+                        <span class="status-badge ${voice.is_active ? 'status-active' : 'status-inactive'}">
+                            ${voice.is_active ? '✓ Ativo' : '✗ Inativo'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-edit" onclick='editVoice(${JSON.stringify(voice)})'>✏️ Editar</button>
+                            <button class="btn-delete" onclick="deleteVoice('${voice.id}', '${voice.display_name}')">🗑️ Excluir</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateAvatarStats() {
+            document.getElementById('totalAvatars').textContent = avatarsData.length;
+            document.getElementById('activeAvatars').textContent = avatarsData.filter(a => a.is_active).length;
+        }
+
+        function updateVoiceStats() {
+            document.getElementById('totalVoices').textContent = voicesData.length;
+        }
+
+        function updateCharts() {
+            updateGenderChart();
+            updateLanguageChart();
+            updateTypeChart();
+        }
+
+        function updateGenderChart() {
+            const maleCount = avatarsData.filter(a => a.gender === 'male').length;
+            const femaleCount = avatarsData.filter(a => a.gender === 'female').length;
+
+            const ctx = document.getElementById('avatarGenderChart');
+            if (charts.genderChart) charts.genderChart.destroy();
+
+            charts.genderChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Masculino', 'Feminino'],
+                    datasets: [{
+                        data: [maleCount, femaleCount],
+                        backgroundColor: ['#3498db', '#e74c3c']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        function updateLanguageChart() {
+            const languageCounts = {};
+            voicesData.forEach(voice => {
+                const lang = voice.language || 'Não especificado';
+                languageCounts[lang] = (languageCounts[lang] || 0) + 1;
+            });
+
+            const ctx = document.getElementById('voiceLanguageChart');
+            if (charts.languageChart) charts.languageChart.destroy();
+
+            charts.languageChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(languageCounts),
+                    datasets: [{
+                        label: 'Vozes',
+                        data: Object.values(languageCounts),
+                        backgroundColor: '#2ecc71'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        function updateTypeChart() {
+            const typeCounts = {};
+            avatarsData.forEach(avatar => {
+                const type = avatar.avatar_type || 'Não especificado';
+                typeCounts[type] = (typeCounts[type] || 0) + 1;
+            });
+
+            const ctx = document.getElementById('avatarTypeChart');
+            if (charts.typeChart) charts.typeChart.destroy();
+
+            charts.typeChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(typeCounts),
+                    datasets: [{
+                        data: Object.values(typeCounts),
+                        backgroundColor: ['#3498db', '#e74c3c', '#f39c12', '#9b59b6']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        function updateHistoryChart() {
+            const ctx = document.getElementById('historyChart');
+            if (charts.historyChart) charts.historyChart.destroy();
+
+            const dates = historyData.map(d => new Date(d.created_at));
+            const cpuData = historyData.map(d => d.cpu_usage || 0);
+            const memData = historyData.map(d => d.memory_usage || 0);
+
+            charts.historyChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [
+                        {
+                            label: 'CPU %',
+                            data: cpuData,
+                            borderColor: '#3498db',
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Memória %',
+                            data: memData,
+                            borderColor: '#e74c3c',
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'hour'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+
+            // Monthly chart
+            const monthlyCtx = document.getElementById('monthlyChart');
+            if (charts.monthlyChart) charts.monthlyChart.destroy();
+
+            charts.monthlyChart = new Chart(monthlyCtx, {
+                type: 'line',
+                data: {
+                    labels: dates.slice(0, 30),
+                    datasets: [{
+                        label: 'Renders Diários',
+                        data: historyData.slice(0, 30).map(d => d.total_renders || 0),
+                        borderColor: '#2ecc71',
+                        fill: true,
+                        backgroundColor: 'rgba(46, 204, 113, 0.1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        function updatePerformanceChart() {
+            const ctx = document.getElementById('performanceChart');
+            if (charts.performanceChart) charts.performanceChart.destroy();
+
+            charts.performanceChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Avatares', 'Vozes', 'Renders', 'Storage'],
+                    datasets: [{
+                        label: 'Uso (%)',
+                        data: [
+                            (avatarsData.length / 100) * 100,
+                            (voicesData.length / 50) * 100,
+                            75,
+                            60
+                        ],
+                        backgroundColor: ['#3498db', '#2ecc71', '#f39c12', '#e74c3c']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+
+        // ==================== MODAL FUNCTIONS ====================
+        function openAddModal() {
+            document.getElementById('avatarModalTitle').textContent = 'Adicionar Avatar';
+            document.getElementById('avatarForm').reset();
+            document.getElementById('avatarId').value = '';
+            document.getElementById('avatarModal').style.display = 'block';
+        }
+
+        function openAddVoiceModal() {
+            document.getElementById('voiceModalTitle').textContent = 'Adicionar Voz';
+            document.getElementById('voiceForm').reset();
+            document.getElementById('voiceId').value = '';
+            document.getElementById('voiceModal').style.display = 'block';
+        }
+
+        function editAvatar(avatar) {
+            document.getElementById('avatarModalTitle').textContent = 'Editar Avatar';
+            document.getElementById('avatarId').value = avatar.id;
+            document.getElementById('avatarName').value = avatar.display_name;
+            document.getElementById('avatarGender').value = avatar.gender;
+            document.getElementById('avatarType').value = avatar.avatar_type || 'professional';
+            document.getElementById('avatarActive').checked = avatar.is_active;
+            document.getElementById('avatarModal').style.display = 'block';
+        }
+
+        function editVoice(voice) {
+            document.getElementById('voiceModalTitle').textContent = 'Editar Voz';
+            document.getElementById('voiceId').value = voice.id;
+            document.getElementById('voiceName').value = voice.display_name;
+            document.getElementById('voiceGender').value = voice.gender;
+            document.getElementById('voiceLanguage').value = voice.language || 'pt-BR';
+            document.getElementById('voiceActive').checked = voice.is_active;
+            document.getElementById('voiceModal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // ==================== UTILITY FUNCTIONS ====================
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active');
+            
+            if (tabName === 'analytics') updatePerformanceChart();
+            if (tabName === 'alerts') renderAlerts();
+        }
+
+        function applyFilters() {
+            renderAvatarsTable();
+            renderVoicesTable();
+        }
+
+        function sortTable(table, column) {
+            const data = table === 'avatars' ? avatarsData : voicesData;
+            data.sort((a, b) => {
+                if (a[column] < b[column]) return -1;
+                if (a[column] > b[column]) return 1;
+                return 0;
+            });
+            table === 'avatars' ? renderAvatarsTable() : renderVoicesTable();
+        }
+
+        function logActivity(message) {
+            const timestamp = new Date().toLocaleTimeString('pt-BR');
+            activityLog.unshift({ message, timestamp });
+            activityLog = activityLog.slice(0, 50);
+            
+            const logContainer = document.getElementById('activityLog');
+            if (logContainer) {
+                logContainer.innerHTML = activityLog.map(log => `
+                    <div class="activity-item">
+                        <div>${log.message}</div>
+                        <div class="activity-time">${log.timestamp}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.className = 'toast show ' + type;
+            toast.innerHTML = `<strong>${message}</strong>`;
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function showLoading(show) {
+            document.getElementById('loadingSpinner').style.display = show ? 'block' : 'none';
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            logActivity(`🌓 Tema alterado para ${newTheme === 'dark' ? 'escuro' : 'claro'}`);
+        }
+
+        function refreshAll() {
+            logActivity('🔄 Atualizando todos os dados...');
+            loadAvatars();
+            loadVoices();
+            loadSystemStats();
+            showToast('Dados atualizados!', 'success');
+        }
+
+        function exportToPDF() {
+            showToast('📄 Gerando PDF...', 'info');
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(20);
+            doc.text('Avatar 3D Studio - Relatorio Ultra', 20, 20);
+            doc.setFontSize(12);
+            doc.text(`Data: ${new Date().toLocaleString('pt-BR')}`, 20, 30);
+            doc.text(`Total de Avatares: ${avatarsData.length}`, 20, 40);
+            doc.text(`Avatares Ativos: ${avatarsData.filter(a => a.is_active).length}`, 20, 50);
+            doc.text(`Total de Vozes: ${voicesData.length}`, 20, 60);
+            doc.text(`Vozes Ativas: ${voicesData.filter(v => v.is_active).length}`, 20, 70);
+            
+            doc.save('dashboard-ultra-report.pdf');
+            showToast('✅ PDF gerado!', 'success');
+            logActivity('📄 PDF exportado');
+        }
+
+        function exportToCSV() {
+            showToast('📊 Gerando CSV...', 'info');
+            let csv = "Tipo,Nome,Genero,Tipo_Avatar,Idioma,Status\n";
+            
+            avatarsData.forEach(a => {
+                csv += `Avatar,${a.display_name},${a.gender},${a.avatar_type || ''},${a.is_active ? 'Ativo' : 'Inativo'}\n`;
+            });
+            
+            voicesData.forEach(v => {
+                csv += `Voz,${v.display_name},${v.gender},,${v.language || ''},${v.is_active ? 'Ativo' : 'Inativo'}\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'dashboard-ultra-data.csv';
+            a.click();
+            
+            showToast('✅ CSV gerado!', 'success');
+            logActivity('📊 CSV exportado');
+        }
+
+        function createAlert() {
+            const type = document.getElementById('alertType').value;
+            const threshold = document.getElementById('alertThreshold').value;
+            
+            alerts.push({
+                id: Date.now(),
+                type,
+                threshold: parseInt(threshold),
+                created_at: new Date()
+            });
+            
+            showToast('Alerta criado com sucesso!', 'success');
+            logActivity(`🔔 Novo alerta: ${type} (limite: ${threshold})`);
+            renderAlerts();
+        }
+
+        function renderAlerts() {
+            const container = document.getElementById('alertsContainer');
+            
+            // Check for triggered alerts
+            const triggeredAlerts = [];
+            
+            if (avatarsData.length >= 10) {
+                triggeredAlerts.push({
+                    type: 'warning',
+                    message: `⚠️ Limite de avatares atingido: ${avatarsData.length}/10`
+                });
+            }
+            
+            if (voicesData.length >= 15) {
+                triggeredAlerts.push({
+                    type: 'warning',
+                    message: `⚠️ Limite de vozes atingido: ${voicesData.length}/15`
+                });
+            }
+
+            container.innerHTML = triggeredAlerts.length > 0 
+                ? triggeredAlerts.map(alert => `
+                    <div class="alert-banner">
+                        <span>${alert.message}</span>
+                        <button class="btn" onclick="this.parentElement.remove()">Dispensar</button>
+                    </div>
+                `).join('')
+                : '<div class="card"><p style="text-align: center; color: #7f8c8d;">Nenhum alerta ativo no momento</p></div>';
+        }
+
+        // ==================== INICIALIZAÇÃO ====================
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Restaurar tema salvo
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.body.setAttribute('data-theme', savedTheme);
+            }
+
+            // Forms
+            document.getElementById('avatarForm').addEventListener('submit', saveAvatar);
+            document.getElementById('voiceForm').addEventListener('submit', saveVoice);
+
+            // Fechar modais ao clicar fora
+            window.onclick = function(event) {
+                if (event.target.classList.contains('modal')) {
+                    event.target.style.display = 'none';
+                }
+            };
+
+            // Inicializar
+            logActivity('🚀 Dashboard Ultra v3.0 inicializado');
+            showLoading(true);
+            
+            await loadAvatars();
+            await loadVoices();
+            await loadSystemStats();
+            
+            setupRealtime();
+            updatePerformanceChart();
+            
+            showLoading(false);
+            showToast('Dashboard carregado com sucesso!', 'success');
+            
+            // Auto-refresh a cada 5 minutos
+            setInterval(refreshAll, 300000);
+        });
+    </script>
+</body>
+</html>

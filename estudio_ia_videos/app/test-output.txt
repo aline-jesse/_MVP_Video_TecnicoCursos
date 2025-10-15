@@ -1,0 +1,144 @@
+
+> test
+> jest subtitle-manager.test.ts
+
+FAIL __tests__/lib/video/subtitle-manager.test.ts (124.676 s)
+  SubtitleManager
+    Constructor
+      ÔêÜ should create manager with default config (27 ms)
+      ÔêÜ should create manager with custom config (7 ms)
+    Track Management
+      ÔêÜ should create new track (10 ms)
+      ÔêÜ should remove track (8 ms)
+      ÔêÜ should return false when removing non-existent track (15 ms)
+      ÔêÜ should get all tracks (7 ms)
+      ÔêÜ should get default track (7 ms)
+      ÔêÜ should return first track if no default set (6 ms)
+      ÔêÜ should emit track:created event (8 ms)
+      ÔêÜ should emit track:removed event (6 ms)
+    Subtitle Entry Management
+      ÔêÜ should add entry successfully (9 ms)
+      ÔêÜ should throw error for non-existent track (117 ms)
+      ÔêÜ should throw error for negative start time (8 ms)
+      ÔêÜ should throw error for invalid timing (7 ms)
+      ÔêÜ should throw error for empty text (20 ms)
+      ÔêÜ should auto-sort entries by start time (6 ms)
+      ÔêÜ should remove entry (5 ms)
+      ÔêÜ should return false when removing non-existent entry (5 ms)
+      ÔêÜ should update entry (7 ms)
+      ÔêÜ should throw error when updating with invalid timing (7 ms)
+      ÔêÜ should get entries in time range (7 ms)
+      ÔêÜ should emit entry:added event (6 ms)
+    Synchronization
+      ÔêÜ should apply offset to track (7 ms)
+      ÔêÜ should apply speed factor to track (30 ms)
+      ÔêÜ should apply offset and speed factor together (12 ms)
+      ÔêÜ should adjust individual entry timing (12 ms)
+      ÔêÜ should prevent negative start time when adjusting (16 ms)
+      ÔêÜ should emit track:synced event (6 ms)
+    Validation
+      ÔêÜ should validate track successfully (5 ms)
+      ÔêÜ should detect missing text (6 ms)
+      ÔêÜ should detect overlapping entries (8 ms)
+      ÔêÜ should detect short duration (8 ms)
+      ÔêÜ should detect long duration (6 ms)
+      ÔêÜ should detect long text (6 ms)
+      ÔêÜ should detect too many lines (6 ms)
+      ÔêÜ should detect large gap (8 ms)
+    Import/Export
+      ÔêÜ should import SRT file (13 ms)
+      ÔêÜ should export to SRT format (11 ms)
+      ÔêÜ should export to VTT format (7 ms)
+      ÔêÜ should export to ASS format (10 ms)
+      ÔêÜ should include formatting in SRT export (14 ms)
+      ÔêÜ should throw error for unsupported format (10 ms)
+    Embed Subtitles
+      ÔêÜ should embed burn-in subtitles (12 ms)
+      ÔêÜ should embed soft subtitles (7 ms)
+      ├ù should emit embed events (11 ms)
+      ├ù should handle ffmpeg error (120026 ms)
+    Utility Methods
+      ÔêÜ should clear all tracks (11 ms)
+      ÔêÜ should count total entries (9 ms)
+      ÔêÜ should update config (10 ms)
+      ÔêÜ should emit config:updated event (7 ms)
+    Factory Functions
+      ÔêÜ should create basic subtitle manager (13 ms)
+      ÔêÜ should create course subtitle manager (8 ms)
+      ÔêÜ should create multi-language subtitle manager (10 ms)
+      ÔêÜ should create accessible subtitle manager (6 ms)
+    Edge Cases
+      ÔêÜ should handle very short subtitles (8 ms)
+      ÔêÜ should handle very long subtitles (6 ms)
+      ÔêÜ should handle special characters in text (8 ms)
+      ÔêÜ should handle multi-line text (4 ms)
+
+  ÔùÅ SubtitleManager ÔÇ║ Embed Subtitles ÔÇ║ should emit embed events
+
+    expect(jest.fn()).toHaveBeenCalled()
+
+    Expected number of calls: >= 1
+    Received number of calls:    0
+
+      666 |         if (event === 'end') {
+      667 |           Promise.resolve().then(() => callback());
+    > 668 |         }
+          |          ^
+      669 |         return mockFfmpegInstance;
+      670 |       });
+      671 |
+
+      at Object.<anonymous> (__tests__/lib/video/subtitle-manager.test.ts:668:24)
+
+  ÔùÅ SubtitleManager ÔÇ║ Embed Subtitles ÔÇ║ should handle ffmpeg error
+
+    thrown: "Exceeded timeout of 120000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      670 |       });
+      671 |
+    > 672 |       await manager.embedSubtitles({
+          |     ^
+      673 |         videoPath: './input.mp4',
+      674 |         outputPath: './output.mp4',
+      675 |         trackId,
+
+      at __tests__/lib/video/subtitle-manager.test.ts:672:5
+      at __tests__/lib/video/subtitle-manager.test.ts:610:3
+      at Object.<anonymous> (__tests__/lib/video/subtitle-manager.test.ts:18:1)
+
+  ÔùÅ SubtitleManager ÔÇ║ Embed Subtitles ÔÇ║ should handle ffmpeg error
+
+    Unhandled error. (Error: FFmpeg error
+
+      674 |         outputPath: './output.mp4',
+      675 |         trackId,
+    > 676 |         burnIn: true,
+          |                                                 ^
+      677 |       });
+      678 |
+      679 |       expect(startSpy).toHaveBeenCalled();
+
+      at __tests__/lib/video/subtitle-manager.test.ts:676:49)
+      at lib/video/subtitle-manager.ts:759:18
+
+  ÔùÅ SubtitleManager ÔÇ║ Embed Subtitles ÔÇ║ should handle ffmpeg error
+
+    Unhandled error. (Error: FFmpeg error
+
+      674 |         outputPath: './output.mp4',
+      675 |         trackId,
+    > 676 |         burnIn: true,
+          |                                                 ^
+      677 |       });
+      678 |
+      679 |       expect(startSpy).toHaveBeenCalled();
+
+      at __tests__/lib/video/subtitle-manager.test.ts:676:49)
+      at lib/video/subtitle-manager.ts:759:18
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 56 passed, 58 total
+Snapshots:   0 total
+Time:        125.818 s
+Ran all test suites matching subtitle-manager.test.ts.

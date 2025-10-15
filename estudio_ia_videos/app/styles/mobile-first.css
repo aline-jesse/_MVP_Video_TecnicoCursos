@@ -1,0 +1,364 @@
+
+
+/* Mobile-First CSS Otimizado para Estúdio IA de Vídeos */
+
+/* === BASE MOBILE STYLES === */
+@media (max-width: 640px) {
+  
+  /* Layout Principal */
+  .mobile-layout {
+    padding: 0.5rem;
+    overflow-x: hidden;
+  }
+
+  /* Header Mobile */
+  .mobile-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  /* Navigation Mobile */
+  .mobile-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid #e5e7eb;
+    padding: 0.75rem;
+    z-index: 50;
+  }
+
+  /* Cards Mobile */
+  .mobile-card {
+    margin-bottom: 1rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Timeline Vertical */
+  .mobile-timeline {
+    flex-direction: column;
+    height: auto;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  .mobile-timeline-track {
+    width: 100%;
+    height: 80px;
+    margin-bottom: 0.5rem;
+    border-radius: 0.5rem;
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  /* Avatar Selector Mobile */
+  .mobile-avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .mobile-avatar-card {
+    aspect-ratio: 3/4;
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  }
+
+  /* Voice Selector Mobile */
+  .mobile-voice-list {
+    max-height: 50vh;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+  }
+
+  .mobile-voice-card {
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    border-radius: 0.75rem;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Mascot Creator Mobile */
+  .mobile-mascot-preview {
+    aspect-ratio: 16/9;
+    border-radius: 0.75rem;
+    background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  /* Floating Controls */
+  .mobile-floating-controls {
+    position: fixed;
+    bottom: 80px; /* Above navigation */
+    right: 1rem;
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .mobile-floating-button {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .mobile-floating-button:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Bottom Sheet */
+  .mobile-bottom-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top-left-radius: 1.5rem;
+    border-top-right-radius: 1.5rem;
+    padding: 1.5rem;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 60;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Gesture Indicators */
+  .mobile-gesture-hint {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    opacity: 0.8;
+  }
+}
+
+/* === TABLET STYLES === */
+@media (min-width: 641px) and (max-width: 1024px) {
+  
+  .tablet-layout {
+    padding: 1rem;
+  }
+
+  .tablet-sidebar {
+    width: 280px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    background: white;
+    border-right: 1px solid #e5e7eb;
+    z-index: 40;
+  }
+
+  .tablet-main-content {
+    margin-left: 280px;
+    padding: 1rem;
+  }
+
+  .tablet-timeline {
+    flex-direction: row;
+    height: 120px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+}
+
+/* === DESKTOP STYLES === */
+@media (min-width: 1025px) {
+  
+  .desktop-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 2rem;
+    padding: 2rem;
+  }
+
+  .desktop-sidebar {
+    position: sticky;
+    top: 2rem;
+    height: fit-content;
+  }
+
+  .desktop-timeline {
+    flex-direction: row;
+    height: 150px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+}
+
+/* === PERFORMANCE OPTIMIZATIONS === */
+
+/* Lazy Loading */
+.lazy-load {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.lazy-load.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .mobile-card, .tablet-sidebar, .desktop-sidebar {
+    border: 2px solid #000;
+  }
+  
+  .mobile-floating-button {
+    border: 3px solid #fff;
+  }
+}
+
+/* === ACCESSIBILITY === */
+
+/* Focus Indicators Enhanced */
+.mobile-focus:focus-visible,
+.tablet-focus:focus-visible,
+.desktop-focus:focus-visible {
+  outline: 3px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 0.375rem;
+}
+
+/* Touch Target Sizes */
+.mobile-touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Haptic Feedback Simulation */
+.mobile-haptic:active {
+  transform: scale(0.98);
+  transition: transform 0.1s;
+}
+
+/* === PWA SPECIFIC STYLES === */
+
+/* Install Prompt */
+.pwa-install-prompt {
+  position: fixed;
+  bottom: 100px;
+  left: 1rem;
+  right: 1rem;
+  background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%);
+  color: white;
+  padding: 1rem;
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 70;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Offline Indicator */
+.offline-indicator {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fbbf24;
+  color: #92400e;
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  z-index: 80;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* === ANIMATION OPTIMIZATIONS === */
+
+/* GPU Acceleration */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+}
+
+/* Smooth Transitions */
+.smooth-transition {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Loading States */
+.mobile-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* === DARK MODE MOBILE === */
+@media (prefers-color-scheme: dark) {
+  .mobile-layout, .tablet-layout, .desktop-layout {
+    background: #0f172a;
+    color: #f1f5f9;
+  }
+
+  .mobile-card, .mobile-voice-card {
+    background: #1e293b;
+    border-color: #334155;
+  }
+
+  .mobile-nav, .mobile-header {
+    background: rgba(15, 23, 42, 0.95);
+    border-color: #334155;
+  }
+
+  .mobile-bottom-sheet {
+    background: #1e293b;
+    border-color: #334155;
+  }
+}
+

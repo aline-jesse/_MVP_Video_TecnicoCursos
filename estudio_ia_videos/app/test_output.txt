@@ -1,0 +1,200 @@
+
+> test
+> jest collaboration-system.test.ts
+
+FAIL __tests__/lib/collaboration/collaboration-system.test.ts
+  VideoCollaborationSystem
+    User Management
+      ÔêÜ should add user (102 ms)
+      ÔêÜ should get all users (12 ms)
+      ÔêÜ should set user online status (15 ms)
+      ÔêÜ should get online users (17 ms)
+    Comments System
+      ÔêÜ should create comment (23 ms)
+      ÔêÜ should not create comment without permission (17 ms)
+      ÔêÜ should reply to comment (12 ms)
+      ÔêÜ should update comment (12 ms)
+      ÔêÜ should resolve comment (17 ms)
+      ÔêÜ should delete comment (10 ms)
+      ÔêÜ should get project comments (7 ms)
+      ÔêÜ should get comments at timestamp (24 ms)
+      ÔêÜ should not exceed max comments (20 ms)
+    Versioning
+      ÔêÜ should create version (27 ms)
+      ÔêÜ should get version (8 ms)
+      ÔêÜ should get project versions (9 ms)
+      ÔêÜ should restore version (9 ms)
+      ÔêÜ should compare versions (10 ms)
+      ÔêÜ should not create version when disabled (8 ms)
+    Permissions
+      ÔêÜ should grant permission (5 ms)
+      ÔêÜ should revoke permission (8 ms)
+      ÔêÜ should check comment permission (6 ms)
+      ÔêÜ should check edit permission (5 ms)
+      ÔêÜ should check approve permission (7 ms)
+      ÔêÜ should get project users (9 ms)
+      ÔêÜ should handle expired permissions (11 ms)
+    Approvals
+      ├ù should create approval request (8 ms)
+      ├ù should vote on approval (8 ms)
+      ÔêÜ should approve when all vote yes (5 ms)
+      ÔêÜ should reject when any vote no (7 ms)
+      ├ù should not allow non-approver to vote (8 ms)
+      ├ù should cancel approval request (6 ms)
+      ├ù should get pending approvals (10 ms)
+    Real-time Sync
+      ÔêÜ should add sync change (5 ms)
+      ÔêÜ should resolve conflict (5 ms)
+    Presence & Locks
+      ÔêÜ should update presence (7 ms)
+      ÔêÜ should get project presences (6 ms)
+      ÔêÜ should lock resource (4 ms)
+      ÔêÜ should not lock already locked resource (5 ms)
+      ÔêÜ should unlock resource (4 ms)
+      ÔêÜ should not unlock resource by different user (6 ms)
+      ÔêÜ should check if resource is locked (4 ms)
+    Activities
+      ÔêÜ should log activity on comment creation (9 ms)
+      ÔêÜ should get project activities (5 ms)
+      ÔêÜ should get user activities (4 ms)
+      ÔêÜ should limit activities (7 ms)
+    Configuration
+      ÔêÜ should get configuration (6 ms)
+      ÔêÜ should update configuration (5 ms)
+    Statistics
+      ÔêÜ should track user statistics (6 ms)
+      ÔêÜ should track comment statistics (5 ms)
+      ÔêÜ should track version statistics (5 ms)
+      ÔêÜ should track lock statistics (5 ms)
+    Factory Functions
+      ÔêÜ should create basic collaboration system (17 ms)
+      ÔêÜ should create enterprise collaboration system (6 ms)
+      ÔêÜ should create development collaboration system (4 ms)
+    System Reset
+      ÔêÜ should reset system (5 ms)
+
+  ÔùÅ VideoCollaborationSystem ÔÇ║ Approvals ÔÇ║ should create approval request
+
+    TypeError: expect(received).toMatch(expected)
+
+    Matcher error: received value must be a string
+
+    Received has value: null
+
+      426 |
+      427 |       expect(requestId).toBeDefined();
+    > 428 |       expect(requestId).toMatch(/^approval-/);
+          |                         ^
+      429 |
+      430 |       const stats = system.getStatistics();
+      431 |       expect(stats.pendingApprovals).toBe(1);
+
+      at Object.<anonymous> (__tests__/lib/collaboration/collaboration-system.test.ts:428:25)
+
+  ÔùÅ VideoCollaborationSystem ÔÇ║ Approvals ÔÇ║ should vote on approval
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      443 |       const result = system.voteApproval(requestId!, 'approver1', true, 'Looks good');
+      444 |
+    > 445 |       expect(result).toBe(true);
+          |                      ^
+      446 |     });
+      447 |
+      448 |     it('should approve when all vote yes', () => {
+
+      at Object.<anonymous> (__tests__/lib/collaboration/collaboration-system.test.ts:445:22)
+
+  ÔùÅ VideoCollaborationSystem ÔÇ║ Approvals ÔÇ║ should not allow non-approver to vote
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: ObjectContaining {"type": "not-approver"}
+
+    Number of calls: 0
+
+      496 |
+      497 |       expect(result).toBe(false);
+    > 498 |       expect(errorSpy).toHaveBeenCalledWith(
+          |                        ^
+      499 |         expect.objectContaining({ type: 'not-approver' })
+      500 |       );
+      501 |     });
+
+      at Object.<anonymous> (__tests__/lib/collaboration/collaboration-system.test.ts:498:24)
+
+  ÔùÅ VideoCollaborationSystem ÔÇ║ Approvals ÔÇ║ should cancel approval request
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      513 |       const result = system.cancelApprovalRequest(requestId!, 'user1');
+      514 |
+    > 515 |       expect(result).toBe(true);
+          |                      ^
+      516 |
+      517 |       const stats = system.getStatistics();
+      518 |       expect(stats.pendingApprovals).toBe(0);
+
+      at Object.<anonymous> (__tests__/lib/collaboration/collaboration-system.test.ts:515:22)
+
+  ÔùÅ VideoCollaborationSystem ÔÇ║ Approvals ÔÇ║ should get pending approvals
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 2
+    Received length: 0
+    Received array:  []
+
+      525 |       const pending = system.getPendingApprovals('project1');
+      526 |
+    > 527 |       expect(pending).toHaveLength(2);
+          |                       ^
+      528 |     });
+      529 |   });
+      530 |
+
+      at Object.<anonymous> (__tests__/lib/collaboration/collaboration-system.test.ts:527:23)
+
+Test Suites: 1 failed, 1 total
+Tests:       5 failed, 51 passed, 56 total
+Snapshots:   0 total
+Time:        4.214 s, estimated 5 s
+Ran all test suites matching collaboration-system.test.ts.
+
+Jest has detected the following 2 open handles potentially keeping Jest from exiting:
+
+  ÔùÅ  Timeout
+
+      1034 |    */
+      1035 |   private startSyncTimer(): void {
+    > 1036 |     this.syncTimer = setInterval(() => {
+           |                      ^
+      1037 |       this.processSyncQueue();
+      1038 |       this.cleanExpiredLocks();
+      1039 |       this.updatePresences();
+
+      at VideoCollaborationSystem.startSyncTimer (lib/collaboration/collaboration-system.ts:1036:22)
+      at new VideoCollaborationSystem (lib/collaboration/collaboration-system.ts:304:12)
+      at Object.<anonymous> (__tests__/lib/collaboration/collaboration-system.test.ts:221:26)
+
+
+  ÔùÅ  Timeout
+
+      1034 |    */
+      1035 |   private startSyncTimer(): void {
+    > 1036 |     this.syncTimer = setInterval(() => {
+           |                      ^
+      1037 |       this.processSyncQueue();
+      1038 |       this.cleanExpiredLocks();
+      1039 |       this.updatePresences();
+
+      at VideoCollaborationSystem.startSyncTimer (lib/collaboration/collaboration-system.ts:1036:22)
+      at new VideoCollaborationSystem (lib/collaboration/collaboration-system.ts:304:12)
+      at Object.<anonymous> (__tests__/lib/collaboration/collaboration-system.test.ts:312:26)
+

@@ -1,0 +1,11 @@
+
+import EnhancedDashboardV4 from '@/components/enhanced-features/enhanced-dashboard-v4';
+
+export default function HomePage() {
+  return <EnhancedDashboardV4 />;
+}
+
+export const metadata = {
+  title: 'Dashboard - Estúdio IA de Vídeos',
+  description: 'Dashboard executivo para criação de vídeos de treinamento com IA',
+};

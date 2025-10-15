@@ -1,0 +1,29 @@
+{
+  "project": {
+    "id": "nr12-safety-training",
+    "title": "Treinamento NR-12 Segurança",
+    "slides": [
+      {
+        "id": "slide1",
+        "content": "Bem-vindos ao treinamento de segurança NR-12"
+      },
+      {
+        "id": "slide2",
+        "content": "A NR-12 estabelece requisitos mínimos para a prevenção de acidentes"
+      },
+      {
+        "id": "slide3",
+        "content": "Vamos aprender sobre os principais conceitos de segurança"
+      }
+    ],
+    "timeline": {
+      "totalDuration": 30
+    }
+  },
+  "settings": {
+    "resolution": "1080p",
+    "quality": "high",
+    "fps": 30,
+    "format": "mp4"
+  }
+}

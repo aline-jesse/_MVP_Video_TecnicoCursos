@@ -1,0 +1,182 @@
+
+name: CI/CD Pipeline - Sprint 44
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_VERSION: '18.x'
+  STAGING_URL: ${{ secrets.STAGING_URL }}
+  PRODUCTION_URL: ${{ secrets.PRODUCTION_URL }}
+
+jobs:
+  # Build & Unit Tests
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'yarn'
+      
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      
+      - name: Run TypeScript check
+        run: yarn tsc --noEmit
+      
+      - name: Build application
+        run: yarn build
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: .next
+
+  # E2E Tests
+  e2e-tests:
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'yarn'
+      
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      
+      - name: Install Playwright
+        run: yarn playwright install --with-deps ${{ matrix.browser }}
+      
+      - name: Run E2E tests
+        run: yarn playwright test --project=${{ matrix.browser }}
+        env:
+          BASE_URL: http://localhost:3000
+          DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+      
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-results-${{ matrix.browser }}
+          path: qa/artifacts/
+
+  # Deploy to Staging
+  deploy-staging:
+    runs-on: ubuntu-latest
+    needs: [build, e2e-tests]
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: staging
+      url: ${{ secrets.STAGING_URL }}
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+          path: .next
+      
+      - name: Deploy to Staging
+        run: |
+          echo "Deploying to staging..."
+          # Add your staging deployment command here
+          # e.g., vercel deploy --env staging
+      
+      - name: Run smoke tests
+        run: |
+          sleep 30
+          curl -f ${{ secrets.STAGING_URL }}/api/health || exit 1
+          curl -f ${{ secrets.STAGING_URL }}/api/certificates/verify?tokenId=test || exit 1
+
+  # Deploy to Production (Blue-Green)
+  deploy-production:
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: ${{ secrets.PRODUCTION_URL }}
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+          path: .next
+      
+      - name: Deploy Green (new version)
+        id: deploy-green
+        run: |
+          echo "Deploying to GREEN environment..."
+          # Deploy to green environment
+          # Store green URL in output
+          echo "green_url=${{ secrets.GREEN_URL }}" >> $GITHUB_OUTPUT
+      
+      - name: Health check GREEN
+        run: |
+          sleep 30
+          curl -f ${{ steps.deploy-green.outputs.green_url }}/api/health || exit 1
+          echo "GREEN environment healthy"
+      
+      - name: Run smoke E2E on GREEN
+        run: |
+          yarn playwright test tests/e2e/smoke.spec.ts
+        env:
+          BASE_URL: ${{ steps.deploy-green.outputs.green_url }}
+      
+      - name: Switch traffic to GREEN (Blue-Green swap)
+        run: |
+          echo "Switching production traffic to GREEN..."
+          # Update load balancer / DNS to point to green
+          # Mark blue as standby for rollback
+      
+      - name: Verify production
+        run: |
+          sleep 10
+          curl -f ${{ secrets.PRODUCTION_URL }}/api/health || exit 1
+          echo "Production deployment successful"
+      
+      - name: Notify deployment
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: 'Production deployment successful! 🚀'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+
+  # Rollback on failure
+  rollback:
+    runs-on: ubuntu-latest
+    needs: deploy-production
+    if: failure()
+    steps:
+      - name: Rollback to BLUE
+        run: |
+          echo "Health check failed! Rolling back to BLUE..."
+          # Switch traffic back to blue environment
+      
+      - name: Notify rollback
+        uses: 8398a7/action-slack@v3
+        with:
+          status: 'failure'
+          text: 'Deployment failed - rolled back to previous version ⚠️'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}

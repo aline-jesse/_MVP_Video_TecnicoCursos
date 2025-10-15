@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "chromeDeveloperTools": {
+    "enabled": true,
+    "features": ["inspector", "network", "console", "performance"]
+  }
+}
+

@@ -1,0 +1,32 @@
+npm verbose cli C:\nvm4w\nodejs\node.exe C:\Users\Servidor\AppData\Roaming\npm\node_modules\npm\bin\npm-cli.js
+npm info using npm@11.5.2
+npm info using node@v20.18.0
+npm verbose title npm test subtitle-manager.test.ts
+npm verbose argv "test" "subtitle-manager.test.ts" "--loglevel" "verbose"
+npm verbose logfile logs-max:10 dir:C:\Users\Servidor\AppData\Local\npm-cache\_logs\2025-10-10T14_19_32_532Z-
+npm verbose logfile C:\Users\Servidor\AppData\Local\npm-cache\_logs\2025-10-10T14_19_32_532Z-debug-0.log
+
+> test
+> jest subtitle-manager.test.ts
+
+node:events:508
+    const err = new ERR_UNHANDLED_ERROR(stringifiedEr);
+                ^
+
+Error: Unhandled error. ([Error: FFmpeg error])
+    at SubtitleManager.emit (node:events:508:17)
+    at Array.<anonymous> (C:\xampp\htdocs\_MVP_Video_TecnicoCursos_v7\estudio_ia_videos\app\lib\video\subtitle-manager.ts:759:18)
+    at runNextTicks (node:internal/process/task_queues:60:5)
+    at processImmediate (node:internal/timers:454:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17) {
+  code: 'ERR_UNHANDLED_ERROR',
+  context: [Error: FFmpeg error]
+}
+
+Node.js v20.18.0
+npm verbose cwd C:\xampp\htdocs\_MVP_Video_TecnicoCursos_v7\estudio_ia_videos\app
+npm verbose os Windows_NT 10.0.26100
+npm verbose node v20.18.0
+npm verbose npm  v11.5.2
+npm verbose exit 1
+npm verbose code 1

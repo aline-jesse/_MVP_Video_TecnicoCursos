@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "env": {
+    "NEXT_PUBLIC_SUPABASE_URL": "https://ofhzrdiadxigrvmrhaiz.supabase.co",
+    "SUPABASE_SERVICE_ROLE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9maHpyZGlhZHhpZ3J2bXJoYWl6Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1OTcxMTc2MSwiZXhwIjoyMDc1Mjg3NzYxfQ.0bVv7shwyo9aSGP5vbopBlZTS5MUDKkLtTCTYh36gug",
+    "DATABASE_URL": "postgresql://postgres:Tr1unf0%40@db.ofhzrdiadxigrvmrhaiz.supabase.co:5432/postgres?pgbouncer=true&connection_limit=1",
+    "NEXTAUTH_SECRET": "fmMMIFQL32ji5Myihy51W1F5R2Xd75wg9iWUK8EKCGo=",
+    "NEXTAUTH_URL": "@url"
+  }
+}

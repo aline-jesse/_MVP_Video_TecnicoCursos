@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avatar 3D Studio - Dashboard Supabase</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 20px;
+        }
+
+        .stat-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .stat-value.small {
+            font-size: 1.4em;
+            line-height: 1.3;
+            word-break: break-word;
+        }
+
+        .stat-change {
+            font-size: 0.9em;
+            padding: 5px 10px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .positive {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .negative {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .neutral {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .data-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .status-online {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-completed {
+            background: #cce7ff;
+            color: #004085;
+        }
+
+        .status-processing {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-restricted {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            z-index: 1000;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 5px solid #dc3545;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 5px solid #28a745;
+        }
+
+        .info-message {
+            background: #e8f4fd;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 5px solid #17a2b8;
+        }
+
+        .audit-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .audit-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 0.95em;
+            gap: 10px;
+        }
+
+        .audit-list li:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 Avatar 3D Studio Dashboard</h1>
+            <p>Sistema de Monitoramento Supabase - Projeto NR-35 Segurança do Trabalho</p>
+            <button class="refresh-btn" onclick="loadAllData()">🔄 Atualizar Dados</button>
+            <button class="refresh-btn" onclick="testConnection()">🔗 Testar Conexão</button>
+            <button class="refresh-btn" onclick="loadAuditData()">📋 Recarregar Auditoria</button>
+        </div>
+
+        <div id="connectionStatus" class="connection-status status-online">
+            🟢 Conectado ao Supabase
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon" style="background: #3498db;">🎥</div>
+                    <div class="stat-title">Avatares Disponíveis</div>
+                </div>
+                <div class="stat-value" id="avatarCount">-</div>
+                <div class="stat-change positive">✓ Operacional</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon" style="background: #e74c3c;">🎙️</div>
+                    <div class="stat-title">Perfis de Voz</div>
+                </div>
+                <div class="stat-value" id="voiceCount">-</div>
+                <div class="stat-change positive">✓ Ativo</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon" style="background: #2ecc71;">⚡</div>
+                    <div class="stat-title">Jobs de Render</div>
+                </div>
+                <div class="stat-value" id="renderCount">-</div>
+                <div class="stat-change neutral" id="renderStatus">Verificando...</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon" style="background: #f39c12;">📊</div>
+                    <div class="stat-title">Analytics</div>
+                </div>
+                <div class="stat-value" id="analyticsCount">-</div>
+                <div class="stat-change neutral" id="analyticsStatus">Verificando...</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon" style="background: #8e44ad;">🕒</div>
+                    <div class="stat-title">Última Auditoria</div>
+                </div>
+                <div class="stat-value small" id="auditTimestamp">-</div>
+                <div class="stat-change neutral" id="auditMode">Carregando...</div>
+            </div>
+        </div>
+
+        <div class="data-section">
+            <h2 class="section-title">🤖 Modelos de Avatar Disponíveis</h2>
+            <div id="avatarData">Carregando dados...</div>
+        </div>
+
+        <div class="data-section">
+            <h2 class="section-title">🎤 Perfis de Voz Disponíveis</h2>
+            <div id="voiceData">Carregando dados...</div>
+        </div>
+
+        <div class="data-section">
+            <h2 class="section-title">📈 Status do Sistema</h2>
+            <div id="systemData">Carregando dados...</div>
+        </div>
+
+        <div class="data-section">
+            <h2 class="section-title">�️ Restrições Detectadas</h2>
+            <div id="auditOperations">Carregando dados da auditoria...</div>
+        </div>
+
+        <div class="data-section">
+            <h2 class="section-title">🔧 Logs de Atividade</h2>
+            <div id="activityLog">
+                <div class="info-message">Os registros dos últimos eventos aparecerão aqui.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuração da API Supabase
+        const SUPABASE_URL = 'https://ofhzrdiadxigrvmrhaiz.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9maHpyZGlhZHhpZ3J2bXJoYWl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk3MTE3NjEsImV4cCI6MjA3NTI4Nzc2MX0.u-F5m9lvYc1lx9aA-MoTZqCAa83QHGVk8uTh-_KPfCQ';
+
+        const headers = {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+        };
+
+        // Função para fazer requisições à API
+        async function apiRequest(endpoint) {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}`, {
+                    method: 'GET',
+                    headers: headers
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('Erro na API:', error);
+                logActivity(`❌ Erro na API: ${error.message}`, 'error');
+                return null;
+            }
+        }
+
+        // Função para registrar atividade
+        function logActivity(message, type = 'info') {
+            const logContainer = document.getElementById('activityLog');
+            const timestamp = new Date().toLocaleString();
+            const className = type === 'error' ? 'error-message' : 'success-message';
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = className;
+            logEntry.innerHTML = `<strong>${timestamp}</strong><br>${message}`;
+            
+            logContainer.insertBefore(logEntry, logContainer.firstChild);
+            
+            // Manter apenas os últimos 10 logs
+            while (logContainer.children.length > 10) {
+                logContainer.removeChild(logContainer.lastChild);
+            }
+        }
+
+        // Carregar dados dos avatares
+        async function loadAvatars() {
+            const data = await apiRequest('avatar_models?limit=10');
+            if (data && data.length > 0) {
+                document.getElementById('avatarCount').textContent = data.length;
+                
+                let html = '<table class="data-table"><thead><tr><th>Nome</th><th>Tipo</th><th>Gênero</th><th>Status</th></tr></thead><tbody>';
+                
+                data.forEach(avatar => {
+                    html += `
+                        <tr>
+                            <td><strong>${avatar.display_name || avatar.name}</strong></td>
+                            <td>${avatar.avatar_type}</td>
+                            <td>${avatar.gender}</td>
+                            <td><span class="status-badge ${avatar.is_active ? 'status-online' : 'status-processing'}">${avatar.is_active ? 'Ativo' : 'Inativo'}</span></td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table>';
+                document.getElementById('avatarData').innerHTML = html;
+                logActivity(`✅ ${data.length} avatares carregados com sucesso`);
+            } else {
+                document.getElementById('avatarCount').textContent = '0';
+                document.getElementById('avatarData').innerHTML = `
+                    <div class="error-message">
+                        <strong>❌ Não foi possível carregar os avatares</strong><br>
+                        Verifique as permissões da tabela <code>avatar_models</code> no Supabase.
+                    </div>
+                `;
+            }
+        }
+
+        // Carregar dados das vozes
+        async function loadVoices() {
+            const data = await apiRequest('voice_profiles?limit=10');
+            if (data && data.length > 0) {
+                document.getElementById('voiceCount').textContent = data.length;
+                
+                let html = '<table class="data-table"><thead><tr><th>Nome</th><th>Idioma</th><th>Gênero</th><th>Status</th></tr></thead><tbody>';
+                
+                data.forEach(voice => {
+                    html += `
+                        <tr>
+                            <td><strong>${voice.display_name || voice.name}</strong></td>
+                            <td>${voice.language}</td>
+                            <td>${voice.gender}</td>
+                            <td><span class="status-badge ${voice.is_active ? 'status-online' : 'status-processing'}">${voice.is_active ? 'Ativo' : 'Inativo'}</span></td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table>';
+                document.getElementById('voiceData').innerHTML = html;
+                logActivity(`✅ ${data.length} perfis de voz carregados com sucesso`);
+            } else {
+                document.getElementById('voiceCount').textContent = '0';
+                document.getElementById('voiceData').innerHTML = `
+                    <div class="error-message">
+                        <strong>❌ Não foi possível carregar os perfis de voz</strong><br>
+                        Verifique as permissões da tabela <code>voice_profiles</code> no Supabase.
+                    </div>
+                `;
+            }
+        }
+
+        // Carregar dados do sistema
+        async function loadSystemStats() {
+            const data = await apiRequest('system_stats?order=recorded_at.desc&limit=5');
+            if (data && data.length > 0) {
+                const latest = data[0];
+                
+                let html = `
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-icon" style="background: #3498db;">💻</div>
+                                <div class="stat-title">CPU Usage</div>
+                            </div>
+                            <div class="stat-value">${latest.cpu_usage || 'N/A'}%</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-icon" style="background: #e74c3c;">🎮</div>
+                                <div class="stat-title">GPU Usage</div>
+                            </div>
+                            <div class="stat-value">${latest.gpu_usage || 'N/A'}%</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-icon" style="background: #2ecc71;">✅</div>
+                                <div class="stat-title">Taxa de Sucesso</div>
+                            </div>
+                            <div class="stat-value">${latest.success_rate ? (latest.success_rate * 100).toFixed(1) : 'N/A'}%</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-icon" style="background: #f39c12;">📊</div>
+                                <div class="stat-title">Total Renders</div>
+                            </div>
+                            <div class="stat-value">${latest.total_renders || 'N/A'}</div>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('systemData').innerHTML = html;
+                logActivity(`✅ Estatísticas do sistema atualizadas`);
+            } else {
+                document.getElementById('systemData').innerHTML = `
+                    <div class="info-message">
+                        <strong>ℹ️ Estatísticas do Sistema Indisponíveis</strong><br>
+                        A tabela <code>system_stats</code> está vazia ou restrita. Execute operações de render para gerar dados de sistema.
+                    </div>
+                `;
+                logActivity('⚠️ Nenhuma estatística do sistema disponível');
+            }
+        }
+
+        // Verificar jobs de renderização
+        async function checkRenderJobs() {
+            const data = await apiRequest('render_jobs?limit=5');
+            if (data) {
+                document.getElementById('renderCount').textContent = data.length;
+                document.getElementById('renderStatus').textContent = '✓ Acessível';
+                document.getElementById('renderStatus').className = 'stat-change positive';
+            } else {
+                document.getElementById('renderCount').textContent = '?';
+                document.getElementById('renderStatus').textContent = 'Restrito';
+                document.getElementById('renderStatus').className = 'stat-change neutral';
+            }
+        }
+
+        // Verificar analytics
+        async function checkAnalytics() {
+            const data = await apiRequest('avatar_analytics?limit=5');
+            if (data) {
+                document.getElementById('analyticsCount').textContent = data.length;
+                document.getElementById('analyticsStatus').textContent = '✓ Acessível';
+                document.getElementById('analyticsStatus').className = 'stat-change positive';
+            } else {
+                document.getElementById('analyticsCount').textContent = '?';
+                document.getElementById('analyticsStatus').textContent = 'Restrito';
+                document.getElementById('analyticsStatus').className = 'stat-change neutral';
+            }
+        }
+
+        // Testar conexão
+        async function testConnection() {
+            const statusElement = document.getElementById('connectionStatus');
+            statusElement.innerHTML = '<div class="loading"></div>Testando...';
+            statusElement.className = 'connection-status neutral';
+            
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/`, {
+                    method: 'GET',
+                    headers: headers
+                });
+                
+                if (response.ok) {
+                    statusElement.innerHTML = '🟢 Conectado ao Supabase';
+                    statusElement.className = 'connection-status status-online';
+                    logActivity('🟢 Conexão com Supabase confirmada');
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                statusElement.innerHTML = '🔴 Erro de Conexão';
+                statusElement.className = 'connection-status negative';
+                logActivity(`🔴 Erro de conexão: ${error.message}`, 'error');
+            }
+        }
+
+        // Carregar dados da auditoria do arquivo JSON
+        async function loadAuditData() {
+            try {
+                const response = await fetch('supabase-audit.json');
+                if (!response.ok) {
+                    throw new Error(`Arquivo de auditoria não encontrado (HTTP ${response.status})`);
+                }
+                
+                const auditData = await response.json();
+                
+                // Atualizar timestamp e modo da auditoria
+                const timestamp = new Date(auditData.timestamp);
+                document.getElementById('auditTimestamp').textContent = timestamp.toLocaleString('pt-BR');
+                document.getElementById('auditMode').textContent = `Modo: ${auditData.mode === 'anon' ? '🔓 Anônimo' : '🔐 Service Key'}`;
+                document.getElementById('auditMode').className = `stat-change ${auditData.mode === 'anon' ? 'neutral' : 'positive'}`;
+                
+                // Exibir restrições detectadas
+                if (auditData.operations) {
+                    let restrictedHtml = '<ul class="audit-list">';
+                    let hasRestrictions = false;
+                    
+                    for (const [table, info] of Object.entries(auditData.operations)) {
+                        if (info.status === 'restricted') {
+                            hasRestrictions = true;
+                            restrictedHtml += `
+                                <li>
+                                    <span><strong>${table}</strong></span>
+                                    <span class="status-badge status-restricted">${info.status}</span>
+                                </li>
+                            `;
+                        }
+                    }
+                    
+                    restrictedHtml += '</ul>';
+                    
+                    if (hasRestrictions) {
+                        document.getElementById('auditOperations').innerHTML = restrictedHtml;
+                        logActivity(`⚠️ ${Object.keys(auditData.operations).length} restrições detectadas na auditoria`, 'error');
+                    } else {
+                        document.getElementById('auditOperations').innerHTML = '<div class="success-message">✅ Nenhuma restrição detectada</div>';
+                        logActivity('✅ Auditoria: Nenhuma restrição detectada');
+                    }
+                } else {
+                    document.getElementById('auditOperations').innerHTML = '<div class="info-message">ℹ️ Dados de operações não disponíveis na auditoria</div>';
+                }
+                
+                logActivity(`📋 Dados da auditoria carregados (${auditData.mode} mode)`);
+            } catch (error) {
+                console.error('Erro ao carregar auditoria:', error);
+                document.getElementById('auditTimestamp').textContent = 'N/A';
+                document.getElementById('auditMode').textContent = 'Arquivo não encontrado';
+                document.getElementById('auditMode').className = 'stat-change negative';
+                document.getElementById('auditOperations').innerHTML = `<div class="error-message">❌ ${error.message}</div>`;
+                logActivity(`❌ Falha ao carregar auditoria: ${error.message}`, 'error');
+            }
+        }
+
+        // Carregar todos os dados
+        async function loadAllData() {
+            logActivity('🔄 Iniciando atualização completa dos dados...');
+            
+            await Promise.all([
+                loadAvatars(),
+                loadVoices(), 
+                loadSystemStats(),
+                checkRenderJobs(),
+                checkAnalytics(),
+                loadAuditData()
+            ]);
+            
+            logActivity('✅ Atualização completa finalizada');
+        }
+
+        // Inicializar dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            logActivity('🚀 Dashboard iniciado - Sistema Avatar 3D Studio');
+            testConnection();
+            loadAllData();
+            
+            // Auto-refresh a cada 5 minutos
+            setInterval(loadAllData, 300000);
+        });
+    </script>
+</body>
+</html>

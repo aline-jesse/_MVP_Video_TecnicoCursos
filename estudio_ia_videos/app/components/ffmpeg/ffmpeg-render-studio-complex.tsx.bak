@@ -1,0 +1,883 @@
+
+/**
+ * 🎬 FFmpeg Render Studio - Interface Profissional de Renderização
+ * Sistema completo de renderização com monitoramento em tempo real
+ */
+
+'use client'
+
+import { useState, useEffect, useRef } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
+import { Button } from '../ui/button'
+import { Badge } from '../ui/badge'
+import { Progress } from '../ui/progress'
+import { Label } from '../ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
+import { Slider } from '../ui/slider'
+import { Switch } from '../ui/switch'
+import { Textarea } from '../ui/textarea'
+import { Alert, AlertDescription } from '../ui/alert'
+import { 
+  Play, 
+  Square, 
+  Download, 
+  Settings, 
+  Monitor, 
+  Cpu, 
+  HardDrive,
+  Clock,
+  Zap,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+  Loader2,
+  Film,
+  Music,
+  Image as ImageIcon,
+  Type,
+  Trash2,
+  Eye
+} from 'lucide-react'
+import { ffmpegEngine, RenderJob, RenderSettings, TimelineData } from '../../lib/ffmpeg-engine'
+import { cn } from '../../lib/utils'
+
+interface FFmpegRenderStudioProps {
+  initialTimeline?: TimelineData
+  onRenderComplete?: (outputUrl: string) => void
+  onRenderStart?: (jobId: string) => void
+}
+
+export default function FFmpegRenderStudio({ 
+  initialTimeline, 
+  onRenderComplete,
+  onRenderStart 
+}: FFmpegRenderStudioProps) {
+  // Estados principais
+  const [activeTab, setActiveTab] = useState('configure')
+  const [renderSettings, setRenderSettings] = useState<RenderSettings>({
+    format: 'mp4',
+    quality: 'standard',
+    preset: 'youtube',
+    resolution: '1080p',
+    fps: 30,
+    hardwareAcceleration: true,
+    priority: 'normal',
+    optimization: 'balanced'
+  })
+  
+  const [currentJob, setCurrentJob] = useState<RenderJob | null>(null)
+  const [allJobs, setAllJobs] = useState<RenderJob[]>([])
+  const [queueStatus, setQueueStatus] = useState<any>({})
+  const [isRendering, setIsRendering] = useState(false)
+  const [systemMetrics, setSystemMetrics] = useState<any>({})
+  
+  // Timeline de demonstração
+  const [timeline, setTimeline] = useState<TimelineData>(initialTimeline || {
+    id: 'demo-timeline',
+    duration: 30,
+    fps: 30,
+    resolution: { width: 1920, height: 1080 },
+    tracks: [
+      {
+        id: 'text-1',
+        type: 'text',
+        startTime: 0,
+        duration: 5,
+        data: {
+          text: 'Bem-vindos ao Estúdio IA de Vídeos',
+          fontSize: 48,
+          color: '#ffffff',
+          fontFamily: 'Arial Bold'
+        },
+        position: { x: 960, y: 540 },
+        scale: 1,
+        rotation: 0,
+        opacity: 1
+      },
+      {
+        id: 'text-2', 
+        type: 'text',
+        startTime: 6,
+        duration: 8,
+        data: {
+          text: 'Sistema de Renderização FFmpeg Real',
+          fontSize: 36,
+          color: '#00ff88',
+          fontFamily: 'Arial'
+        },
+        position: { x: 960, y: 600 },
+        scale: 1,
+        rotation: 0,
+        opacity: 0.9
+      }
+    ],
+    background: {
+      type: 'gradient',
+      value: {
+        colors: ['#1a1a2e', '#16213e', '#0f3460'],
+        direction: 'diagonal'
+      }
+    },
+    audio: {
+      url: '/audio/background-corporate.mp3',
+      volume: 0.3,
+      startTime: 0,
+      duration: 30,
+      fadeIn: 1,
+      fadeOut: 2
+    }
+  })
+
+  // Atualização em tempo real
+  const intervalRef = useRef<NodeJS.Timeout>()
+
+  useEffect(() => {
+    // Iniciar monitoramento em tempo real
+    intervalRef.current = setInterval(() => {
+      updateJobsStatus()
+      updateSystemMetrics()
+    }, 2000)
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+    }
+  }, [])
+
+  // Atualizar status dos jobs
+  const updateJobsStatus = async () => {
+    try {
+      const jobs = ffmpegEngine.getAllJobs()
+      setAllJobs(jobs)
+      
+      const queue = ffmpegEngine.getQueueStatus()
+      setQueueStatus(queue)
+      
+      // Atualizar job atual se existir
+      if (currentJob) {
+        const updatedJob = ffmpegEngine.getJob(currentJob.id)
+        if (updatedJob) {
+          setCurrentJob(updatedJob)
+          
+          // Se completou, chamar callback
+          if (updatedJob.status === 'completed' && updatedJob.outputPath && onRenderComplete) {
+            onRenderComplete(updatedJob.outputPath)
+            setIsRendering(false)
+          }
+          
+          // Se falhou ou cancelado
+          if (['failed', 'cancelled'].includes(updatedJob.status)) {
+            setIsRendering(false)
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar status:', error)
+    }
+  }
+
+  // Simular métricas do sistema
+  const updateSystemMetrics = () => {
+    setSystemMetrics({
+      cpuUsage: Math.random() * 30 + (isRendering ? 40 : 10),
+      memoryUsage: Math.random() * 20 + 45,
+      diskUsage: Math.random() * 5 + 65,
+      temperature: Math.random() * 10 + 50,
+      renderSpeed: isRendering ? `${(Math.random() * 2 + 2.5).toFixed(1)}x` : '0x'
+    })
+  }
+
+  // Iniciar renderização
+  const startRender = async () => {
+    try {
+      setIsRendering(true)
+      
+      const jobId = await ffmpegEngine.addJob(timeline, renderSettings)
+      setCurrentJob(ffmpegEngine.getJob(jobId)!)
+      setActiveTab('monitor')
+      
+      if (onRenderStart) {
+        onRenderStart(jobId)
+      }
+      
+    } catch (error) {
+      console.error('Erro ao iniciar renderização:', error)
+      setIsRendering(false)
+    }
+  }
+
+  // Cancelar renderização
+  const cancelRender = async () => {
+    if (currentJob) {
+      await ffmpegEngine.cancelJob(currentJob.id)
+      setIsRendering(false)
+    }
+  }
+
+  // Aplicar preset
+  const applyPreset = (presetName: string) => {
+    const preset = ffmpegEngine.constructor.PRESETS[presetName]
+    if (preset) {
+      setRenderSettings(prev => ({
+        ...prev,
+        ...preset.settings,
+        preset: presetName as any
+      }))
+    }
+  }
+
+  // Estimar tempo de renderização
+  const getEstimatedTime = () => {
+    if (!timeline) return '0s'
+    
+    const baseTime = timeline.duration
+    const qualityMultipliers = { draft: 0.2, preview: 0.4, standard: 0.8, high: 1.2, ultra: 1.8 }
+    const resolutionMultipliers = { '720p': 0.5, '1080p': 1.0, '4k': 3.0, '8k': 8.0 }
+    
+    const multiplier = qualityMultipliers[renderSettings.quality] * resolutionMultipliers[renderSettings.resolution]
+    const hardwareBoost = renderSettings.hardwareAcceleration ? 0.6 : 1.0
+    const estimatedSeconds = baseTime * multiplier * hardwareBoost
+    
+    if (estimatedSeconds < 60) return `${Math.round(estimatedSeconds)}s`
+    return `${Math.round(estimatedSeconds / 60)}min ${Math.round(estimatedSeconds % 60)}s`
+  }
+
+  // Calcular tamanho estimado do arquivo
+  const getEstimatedFileSize = () => {
+    if (!timeline) return '0 MB'
+    
+    const baseSizePerSecond = 2 // MB por segundo para 1080p standard
+    const qualityMultipliers = { draft: 0.3, preview: 0.5, standard: 1.0, high: 1.8, ultra: 2.5 }
+    const resolutionMultipliers = { '720p': 0.44, '1080p': 1.0, '4k': 4.0, '8k': 16.0 }
+    
+    const sizeMultiplier = qualityMultipliers[renderSettings.quality] * resolutionMultipliers[renderSettings.resolution]
+    const estimatedSize = timeline.duration * baseSizePerSecond * sizeMultiplier
+    
+    if (estimatedSize < 1024) return `${Math.round(estimatedSize)} MB`
+    return `${(estimatedSize / 1024).toFixed(1)} GB`
+  }
+
+  return (
+    <div className="w-full max-w-7xl mx-auto p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-text">FFmpeg Render Studio</h1>
+          <p className="text-text-muted mt-1">Sistema de renderização profissional com monitoramento em tempo real</p>
+        </div>
+        
+        <div className="flex items-center gap-4">
+          <Badge variant="outline" className="flex items-center gap-2">
+            <Cpu className="h-4 w-4" />
+            CPU: {systemMetrics.cpuUsage?.toFixed(1)}%
+          </Badge>
+          <Badge variant="outline" className="flex items-center gap-2">
+            <Zap className="h-4 w-4" />
+            {systemMetrics.renderSpeed}
+          </Badge>
+        </div>
+      </div>
+
+      {/* Tabs principais */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="configure" className="flex items-center gap-2">
+            <Settings className="h-4 w-4" />
+            Configurar
+          </TabsTrigger>
+          <TabsTrigger value="preview" className="flex items-center gap-2">
+            <Eye className="h-4 w-4" />
+            Preview
+          </TabsTrigger>
+          <TabsTrigger value="monitor" className="flex items-center gap-2">
+            <Monitor className="h-4 w-4" />
+            Monitor
+          </TabsTrigger>
+          <TabsTrigger value="queue" className="flex items-center gap-2">
+            <Film className="h-4 w-4" />
+            Fila
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Configuração */}
+        <TabsContent value="configure" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            {/* Configurações básicas */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Settings className="h-5 w-5" />
+                  Configurações de Renderização
+                </CardTitle>
+                <CardDescription>
+                  Configure qualidade, formato e otimizações
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                
+                {/* Presets */}
+                <div className="space-y-2">
+                  <Label>Preset Otimizado</Label>
+                  <Select value={renderSettings.preset} onValueChange={applyPreset}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="youtube">YouTube Optimized</SelectItem>
+                      <SelectItem value="instagram">Instagram Stories/Reels</SelectItem>
+                      <SelectItem value="tiktok">TikTok Vertical</SelectItem>
+                      <SelectItem value="linkedin">LinkedIn Professional</SelectItem>
+                      <SelectItem value="draft">Draft Preview</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Formato */}
+                <div className="space-y-2">
+                  <Label>Formato de Saída</Label>
+                  <Select value={renderSettings.format} onValueChange={(value: any) => 
+                    setRenderSettings(prev => ({ ...prev, format: value }))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="mp4">MP4 (Recomendado)</SelectItem>
+                      <SelectItem value="webm">WebM</SelectItem>
+                      <SelectItem value="mov">MOV</SelectItem>
+                      <SelectItem value="avi">AVI</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Qualidade */}
+                <div className="space-y-2">
+                  <Label>Qualidade</Label>
+                  <Select value={renderSettings.quality} onValueChange={(value: any) => 
+                    setRenderSettings(prev => ({ ...prev, quality: value }))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="draft">Draft (Rápido)</SelectItem>
+                      <SelectItem value="preview">Preview</SelectItem>
+                      <SelectItem value="standard">Standard</SelectItem>
+                      <SelectItem value="high">High</SelectItem>
+                      <SelectItem value="ultra">Ultra (Lento)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Resolução */}
+                <div className="space-y-2">
+                  <Label>Resolução</Label>
+                  <Select value={renderSettings.resolution} onValueChange={(value: any) => 
+                    setRenderSettings(prev => ({ ...prev, resolution: value }))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="720p">720p HD</SelectItem>
+                      <SelectItem value="1080p">1080p Full HD</SelectItem>
+                      <SelectItem value="4k">4K Ultra HD</SelectItem>
+                      <SelectItem value="8k">8K (Experimental)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* FPS */}
+                <div className="space-y-2">
+                  <Label>Taxa de Quadros (FPS)</Label>
+                  <Select value={renderSettings.fps.toString()} onValueChange={(value) => 
+                    setRenderSettings(prev => ({ ...prev, fps: parseInt(value) as any }))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="24">24 FPS (Cinema)</SelectItem>
+                      <SelectItem value="30">30 FPS (Web)</SelectItem>
+                      <SelectItem value="60">60 FPS (Smooth)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+              </CardContent>
+            </Card>
+
+            {/* Configurações avançadas */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Zap className="h-5 w-5" />
+                  Otimizações Avançadas
+                </CardTitle>
+                <CardDescription>
+                  Configurações de performance e qualidade
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+
+                {/* Hardware Acceleration */}
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label>Aceleração de Hardware</Label>
+                    <p className="text-sm text-text-muted">Usar GPU para renderização mais rápida</p>
+                  </div>
+                  <Switch 
+                    checked={renderSettings.hardwareAcceleration}
+                    onCheckedChange={(checked) => 
+                      setRenderSettings(prev => ({ ...prev, hardwareAcceleration: checked }))}
+                  />
+                </div>
+
+                {/* Prioridade */}
+                <div className="space-y-2">
+                  <Label>Prioridade do Job</Label>
+                  <Select value={renderSettings.priority} onValueChange={(value: any) => 
+                    setRenderSettings(prev => ({ ...prev, priority: value }))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="low">Baixa</SelectItem>
+                      <SelectItem value="normal">Normal</SelectItem>
+                      <SelectItem value="high">Alta</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Otimização */}
+                <div className="space-y-2">
+                  <Label>Otimização</Label>
+                  <Select value={renderSettings.optimization} onValueChange={(value: any) => 
+                    setRenderSettings(prev => ({ ...prev, optimization: value }))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="speed">Velocidade</SelectItem>
+                      <SelectItem value="balanced">Balanceado</SelectItem>
+                      <SelectItem value="quality">Qualidade</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Bitrate customizado */}
+                {renderSettings.preset === 'custom' && (
+                  <div className="space-y-2">
+                    <Label>Bitrate (kbps)</Label>
+                    <Slider
+                      value={[renderSettings.bitrate || 5000]}
+                      onValueChange={([value]) => 
+                        setRenderSettings(prev => ({ ...prev, bitrate: value }))}
+                      max={50000}
+                      min={1000}
+                      step={500}
+                      className="w-full"
+                    />
+                    <p className="text-sm text-text-muted">
+                      {renderSettings.bitrate || 5000} kbps
+                    </p>
+                  </div>
+                )}
+
+                {/* Estimativas */}
+                <Alert>
+                  <Clock className="h-4 w-4" />
+                  <AlertDescription className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>Tempo estimado:</span>
+                      <span className="font-mono">{getEstimatedTime()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Tamanho estimado:</span>
+                      <span className="font-mono">{getEstimatedFileSize()}</span>
+                    </div>
+                  </AlertDescription>
+                </Alert>
+
+              </CardContent>
+            </Card>
+
+          </div>
+
+          {/* Botão de renderização */}
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-center gap-4">
+                <Button 
+                  onClick={startRender}
+                  disabled={isRendering}
+                  size="lg"
+                  className="px-8"
+                >
+                  {isRendering ? (
+                    <>
+                      <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                      Renderizando...
+                    </>
+                  ) : (
+                    <>
+                      <Play className="h-5 w-5 mr-2" />
+                      Iniciar Renderização
+                    </>
+                  )}
+                </Button>
+
+                {isRendering && (
+                  <Button 
+                    onClick={cancelRender}
+                    variant="destructive"
+                    size="lg"
+                  >
+                    <Square className="h-5 w-5 mr-2" />
+                    Cancelar
+                  </Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+        </TabsContent>
+
+        {/* Preview da Timeline */}
+        <TabsContent value="preview" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Eye className="h-5 w-5" />
+                Preview da Timeline
+              </CardTitle>
+              <CardDescription>
+                Visualize sua timeline antes da renderização
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              
+              {/* Visualizador da timeline */}
+              <div className="space-y-4">
+                <div className="bg-muted rounded-lg p-4 min-h-[300px] flex items-center justify-center">
+                  <div className="text-center space-y-2">
+                    <Film className="h-12 w-12 mx-auto text-muted-foreground" />
+                    <p className="text-text-muted">Preview da Timeline</p>
+                    <p className="text-sm text-text-muted">
+                      Duração: {timeline.duration}s | Resolução: {timeline.resolution.width}x{timeline.resolution.height}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Tracks */}
+                <div className="space-y-2">
+                  <Label>Tracks ({timeline.tracks.length})</Label>
+                  <div className="space-y-2">
+                    {timeline.tracks.map((track, index) => (
+                      <div key={track.id} className="flex items-center gap-3 p-3 border rounded-lg">
+                        {track.type === 'text' && <Type className="h-4 w-4 text-blue-500" />}
+                        {track.type === 'image' && <ImageIcon className="h-4 w-4 text-green-500" />}
+                        {track.type === 'video' && <Film className="h-4 w-4 text-red-500" />}
+                        {track.type === 'audio' && <Music className="h-4 w-4 text-purple-500" />}
+                        
+                        <div className="flex-1">
+                          <p className="font-medium">
+                            {track.type === 'text' && track.data.text}
+                            {track.type !== 'text' && `${track.type} Track ${index + 1}`}
+                          </p>
+                          <p className="text-sm text-text-muted">
+                            {track.startTime}s - {track.startTime + track.duration}s
+                          </p>
+                        </div>
+                        
+                        <Badge variant="outline">{track.type}</Badge>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Background */}
+                {timeline.background && (
+                  <div className="space-y-2">
+                    <Label>Background</Label>
+                    <div className="p-3 border rounded-lg">
+                      <p className="font-medium capitalize">{timeline.background.type}</p>
+                      <p className="text-sm text-text-muted">
+                        {JSON.stringify(timeline.background.value).slice(0, 50)}...
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Audio */}
+                {timeline.audio && (
+                  <div className="space-y-2">
+                    <Label>Trilha Sonora</Label>
+                    <div className="flex items-center gap-3 p-3 border rounded-lg">
+                      <Music className="h-4 w-4 text-purple-500" />
+                      <div className="flex-1">
+                        <p className="font-medium">Background Audio</p>
+                        <p className="text-sm text-text-muted">
+                          Volume: {Math.round(timeline.audio.volume * 100)}% | Duração: {timeline.audio.duration}s
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Monitor de progresso */}
+        <TabsContent value="monitor" className="space-y-6">
+          
+          {/* Job atual */}
+          {currentJob && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Monitor className="h-5 w-5" />
+                  Renderização Atual
+                  <Badge variant="outline" className={cn(
+                    currentJob.status === 'completed' && 'border-green-500 text-green-700',
+                    currentJob.status === 'processing' && 'border-blue-500 text-blue-700',
+                    currentJob.status === 'failed' && 'border-red-500 text-red-700',
+                    currentJob.status === 'queued' && 'border-yellow-500 text-yellow-700'
+                  )}>
+                    {currentJob.status === 'completed' && <CheckCircle className="h-3 w-3 mr-1" />}
+                    {currentJob.status === 'processing' && <Loader2 className="h-3 w-3 mr-1 animate-spin" />}
+                    {currentJob.status === 'failed' && <XCircle className="h-3 w-3 mr-1" />}
+                    {currentJob.status === 'queued' && <AlertCircle className="h-3 w-3 mr-1" />}
+                    {currentJob.status}
+                  </Badge>
+                </CardTitle>
+                <CardDescription>
+                  Job ID: {currentJob.id}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                
+                {/* Progresso */}
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <Label>Progresso</Label>
+                    <span className="text-sm font-mono">{currentJob.progress}%</span>
+                  </div>
+                  <Progress value={currentJob.progress} className="h-2" />
+                </div>
+
+                {/* Informações do job */}
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <Label className="text-xs">Início</Label>
+                    <p className="font-mono">{currentJob.startTime?.toLocaleTimeString() || '-'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-xs">Estimativa</Label>
+                    <p className="font-mono">{currentJob.estimatedDuration}s</p>
+                  </div>
+                  <div>
+                    <Label className="text-xs">Formato</Label>
+                    <p className="uppercase">{currentJob.settings.format}</p>
+                  </div>
+                  <div>
+                    <Label className="text-xs">Qualidade</Label>
+                    <p className="capitalize">{currentJob.settings.quality}</p>
+                  </div>
+                </div>
+
+                {/* Botões de ação */}
+                <div className="flex gap-2">
+                  {currentJob.status === 'completed' && currentJob.outputPath && (
+                    <Button asChild>
+                      <a href={currentJob.outputPath} download>
+                        <Download className="h-4 w-4 mr-2" />
+                        Download
+                      </a>
+                    </Button>
+                  )}
+                  
+                  {currentJob.status === 'processing' && (
+                    <Button 
+                      onClick={cancelRender} 
+                      variant="destructive"
+                      size="sm"
+                    >
+                      <Square className="h-4 w-4 mr-2" />
+                      Cancelar
+                    </Button>
+                  )}
+                </div>
+
+                {/* Erro */}
+                {currentJob.error && (
+                  <Alert variant="destructive">
+                    <XCircle className="h-4 w-4" />
+                    <AlertDescription>
+                      {currentJob.error}
+                    </AlertDescription>
+                  </Alert>
+                )}
+
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Métricas do sistema */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Cpu className="h-5 w-5" />
+                Métricas do Sistema
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                <div className="text-center p-3 border rounded-lg">
+                  <Cpu className="h-6 w-6 mx-auto mb-2 text-blue-500" />
+                  <p className="text-sm text-text-muted">CPU</p>
+                  <p className="text-xl font-bold">{systemMetrics.cpuUsage?.toFixed(1)}%</p>
+                </div>
+
+                <div className="text-center p-3 border rounded-lg">
+                  <HardDrive className="h-6 w-6 mx-auto mb-2 text-green-500" />
+                  <p className="text-sm text-text-muted">Memória</p>
+                  <p className="text-xl font-bold">{systemMetrics.memoryUsage?.toFixed(1)}%</p>
+                </div>
+
+                <div className="text-center p-3 border rounded-lg">
+                  <HardDrive className="h-6 w-6 mx-auto mb-2 text-orange-500" />
+                  <p className="text-sm text-text-muted">Disco</p>
+                  <p className="text-xl font-bold">{systemMetrics.diskUsage?.toFixed(1)}%</p>
+                </div>
+
+                <div className="text-center p-3 border rounded-lg">
+                  <Zap className="h-6 w-6 mx-auto mb-2 text-purple-500" />
+                  <p className="text-sm text-text-muted">Velocidade</p>
+                  <p className="text-xl font-bold">{systemMetrics.renderSpeed}</p>
+                </div>
+
+              </div>
+            </CardContent>
+          </Card>
+
+        </TabsContent>
+
+        {/* Fila de renderização */}
+        <TabsContent value="queue" className="space-y-6">
+          
+          {/* Status da fila */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Film className="h-5 w-5" />
+                Status da Fila
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 text-center">
+                <div className="p-3 border rounded-lg">
+                  <p className="text-sm text-text-muted">Na Fila</p>
+                  <p className="text-2xl font-bold text-yellow-600">{queueStatus.queued || 0}</p>
+                </div>
+                <div className="p-3 border rounded-lg">
+                  <p className="text-sm text-text-muted">Processando</p>
+                  <p className="text-2xl font-bold text-blue-600">{queueStatus.processing || 0}</p>
+                </div>
+                <div className="p-3 border rounded-lg">
+                  <p className="text-sm text-text-muted">Concluídos</p>
+                  <p className="text-2xl font-bold text-green-600">{queueStatus.completed || 0}</p>
+                </div>
+                <div className="p-3 border rounded-lg">
+                  <p className="text-sm text-text-muted">Falhas</p>
+                  <p className="text-2xl font-bold text-red-600">{queueStatus.failed || 0}</p>
+                </div>
+                <div className="p-3 border rounded-lg">
+                  <p className="text-sm text-text-muted">Workers</p>
+                  <p className="text-2xl font-bold">{queueStatus.activeWorkers || 0}/{queueStatus.maxWorkers || 4}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Lista de jobs */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Todos os Jobs ({allJobs.length})</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {allJobs.length === 0 ? (
+                  <p className="text-center text-text-muted py-8">
+                    Nenhum job na fila
+                  </p>
+                ) : (
+                  allJobs.slice(0, 10).map(job => (
+                    <div key={job.id} className="flex items-center gap-3 p-3 border rounded-lg">
+                      
+                      {/* Status icon */}
+                      {job.status === 'completed' && <CheckCircle className="h-4 w-4 text-green-500" />}
+                      {job.status === 'processing' && <Loader2 className="h-4 w-4 text-blue-500 animate-spin" />}
+                      {job.status === 'failed' && <XCircle className="h-4 w-4 text-red-500" />}
+                      {job.status === 'queued' && <AlertCircle className="h-4 w-4 text-yellow-500" />}
+                      {job.status === 'cancelled' && <Square className="h-4 w-4 text-gray-500" />}
+                      
+                      <div className="flex-1 min-w-0">
+                        <p className="font-mono text-sm truncate">{job.id}</p>
+                        <p className="text-xs text-text-muted">
+                          {job.settings.format.toUpperCase()} • {job.settings.resolution} • {job.settings.quality}
+                        </p>
+                      </div>
+
+                      {/* Progress */}
+                      <div className="w-16 text-right">
+                        <p className="text-sm font-mono">{job.progress}%</p>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex gap-1">
+                        {job.status === 'completed' && job.outputPath && (
+                          <Button asChild size="sm" variant="outline">
+                            <a href={job.outputPath} download>
+                              <Download className="h-3 w-3" />
+                            </a>
+                          </Button>
+                        )}
+                        
+                        {job.status === 'processing' && (
+                          <Button 
+                            onClick={() => ffmpegEngine.cancelJob(job.id)}
+                            size="sm" 
+                            variant="outline"
+                          >
+                            <Square className="h-3 w-3" />
+                          </Button>
+                        )}
+                        
+                        {['completed', 'failed', 'cancelled'].includes(job.status) && (
+                          <Button 
+                            onClick={() => {/* Implementar delete */}}
+                            size="sm" 
+                            variant="outline"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        )}
+                      </div>
+
+                    </div>
+                  ))
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+        </TabsContent>
+
+      </Tabs>
+
+    </div>
+  )
+}
