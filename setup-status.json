@@ -1,0 +1,11 @@
+{
+  "tables_created": 7,
+  "total_tables": 7,
+  "timestamp": "2025-10-14 19:05:00",
+  "percentage": 100.0,
+  "completed": true,
+  "buckets_created": 4,
+  "health_score": 75,
+  "status": "OPERATIONAL_WITH_CACHE_ISSUE",
+  "notes": "Todas as tabelas e buckets criados. Cache do Supabase em atualização."
+}

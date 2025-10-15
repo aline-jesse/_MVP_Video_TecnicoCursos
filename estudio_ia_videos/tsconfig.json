@@ -1,0 +1,74 @@
+{
+  "compilerOptions": {
+    "target": "es2018",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "es2018"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "downlevelIteration": true,
+    "types": [
+      "node",
+      "react"
+    ],
+    "paths": {
+      "@/*": [
+        "./app/*"
+      ]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": [
+    "next-env.d.ts",
+    "app/app/**/*.ts",
+    "app/app/**/*.tsx",
+    "app/lib/**/*.ts",
+    "app/lib/**/*.tsx",
+    "app/types/**/*.ts",
+    "app/types/**/*.tsx",
+    "_next_temp/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".next",
+    "app/.next",
+    "_next_temp",
+    "__tests__",
+    "app/(pages)",
+    "app/__tests__",
+    "app/api",
+    "app/api/**/*",
+    "src/__tests__",
+    "src/tests",
+    "src/test",
+    "src/lib/**/__tests__",
+    "tests",
+    "coverage",
+    "test-output",
+    "test-outputs",
+    "e2e",
+    "_apis_disabled",
+    "_archived_temp",
+    "_build_old_temp",
+    "archive",
+    "avatar-pipeline",
+    "workers",
+    "src/workers",
+    "src/index.tsx"
+  ]
+}

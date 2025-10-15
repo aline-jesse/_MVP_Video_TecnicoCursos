@@ -1,0 +1,24 @@
+
+{
+  "name": "Plano Médio",
+  "description": "Enquadramento meio corpo (cintura para cima)",
+  "type": "CineCameraActor",
+  "properties": {
+    "location": {
+      "x": 250.0,
+      "y": 0.0,
+      "z": 150.0
+    },
+    "rotation": {
+      "pitch": 0.0,
+      "yaw": 180.0,
+      "roll": 0.0
+    },
+    "fov": 50.0,
+    "focal_length": 35.0,
+    "aperture": 4.0,
+    "focus_distance": 250.0,
+    "sensor_width": 24.89,
+    "sensor_height": 18.67
+  }
+}

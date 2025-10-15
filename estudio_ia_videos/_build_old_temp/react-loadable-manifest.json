@@ -1,0 +1,39 @@
+{
+  "../../../../opt/hostedapp/node/root/app/node_modules/@react-three/drei/core/VideoTexture.js -> hls.js": {
+    "id": null,
+    "files": []
+  },
+  "../../../../opt/hostedapp/node/root/app/node_modules/@react-three/drei/web/FaceLandmarker.js -> @mediapipe/tasks-vision": {
+    "id": null,
+    "files": []
+  },
+  "app/effects-library/page.tsx -> ../../components/effects/gsap-effects-studio": {
+    "id": 59091,
+    "files": [
+      "static/chunks/d79dd21e-1b961058d8b5141b.js",
+      "static/chunks/5162-86d334d8610289bd.js",
+      "static/chunks/3703-b632f129f18d412d.js",
+      "static/chunks/9091-a2eb558861c14495.js",
+      "static/chunks/2885.7dabc4962d57f89d.js"
+    ]
+  },
+  "app/effects-library/page.tsx -> ../../components/effects/lottie-animation-studio": {
+    "id": 20271,
+    "files": [
+      "static/chunks/f4d784f6.e0afe3bde3d94d8e.js",
+      "static/chunks/5162-86d334d8610289bd.js",
+      "static/chunks/1265.2e4d3f2e38bcfdbc.js"
+    ]
+  },
+  "app/effects-library/page.tsx -> ../../components/effects/particle-effects-editor": {
+    "id": 61765,
+    "files": [
+      "static/chunks/bc273373.c53861bf40ef7861.js",
+      "static/chunks/9e0caedf.7da9f9aab765844f.js",
+      "static/chunks/fcff5f37.63d0cf9a2b0e79d4.js",
+      "static/chunks/5162-86d334d8610289bd.js",
+      "static/chunks/1023.2528ed0c66f7c006.js",
+      "static/chunks/1765.ab559acffd0d88d0.js"
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+
+{
+  "name": "Close-up Frontal",
+  "description": "Câmera próxima para enquadramento facial detalhado",
+  "type": "CineCameraActor",
+  "properties": {
+    "location": {
+      "x": 150.0,
+      "y": 0.0,
+      "z": 165.0
+    },
+    "rotation": {
+      "pitch": 0.0,
+      "yaw": 180.0,
+      "roll": 0.0
+    },
+    "fov": 35.0,
+    "focal_length": 50.0,
+    "aperture": 2.8,
+    "focus_distance": 150.0,
+    "sensor_width": 24.89,
+    "sensor_height": 18.67
+  }
+}

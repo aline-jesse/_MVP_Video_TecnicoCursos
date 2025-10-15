@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "app/app/pptx-studio/**/*",
+    "app/app/avatar-studio/**/*",
+    "components/ui/**/*",
+    "lib/config/**/*",
+    "lib/pptx/**/*"
+  ],
+  "exclude": [
+    "**/__tests__/**/*"
+  ]
+}

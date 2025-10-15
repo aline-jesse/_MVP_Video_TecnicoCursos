@@ -1,0 +1,434 @@
+[
+  {
+    "id": "sarah_professional",
+    "name": "Sarah Professional",
+    "type": "3d",
+    "category": "business",
+    "thumbnailUrl": "/avatars/sarah_thumb.jpg",
+    "previewUrl": "/avatars/sarah_preview.mp4",
+    "description": "Professional business presenter with modern style",
+    "tags": ["business", "professional", "presenter", "female"],
+    "isPublic": true,
+    "downloadCount": 1247,
+    "rating": 4.8,
+    "config": {
+      "appearance": {
+        "gender": "female",
+        "age": 32,
+        "ethnicity": "caucasian",
+        "bodyType": "slim",
+        "height": 170,
+        "weight": 60
+      },
+      "facial": {
+        "faceShape": "oval",
+        "skinTone": "fair",
+        "eyeColor": "blue",
+        "eyeShape": "almond",
+        "eyebrowStyle": "natural",
+        "noseShape": "straight",
+        "mouthShape": "medium",
+        "jawline": "soft",
+        "cheekbones": "defined"
+      },
+      "hair": {
+        "style": "professional_bob",
+        "color": "brown",
+        "length": "shoulder",
+        "texture": "straight"
+      },
+      "clothing": {
+        "style": "business",
+        "top": "blazer",
+        "bottom": "trousers",
+        "shoes": "heels",
+        "accessories": ["earrings"]
+      },
+      "voice": {
+        "engine": "azure",
+        "voiceId": "en-US-JennyNeural",
+        "pitch": 0,
+        "speed": 1.0,
+        "accent": "american"
+      }
+    }
+  },
+  {
+    "id": "alex_casual",
+    "name": "Alex Casual",
+    "type": "3d",
+    "category": "casual",
+    "thumbnailUrl": "/avatars/alex_thumb.jpg",
+    "previewUrl": "/avatars/alex_preview.mp4",
+    "description": "Friendly casual presenter perfect for informal content",
+    "tags": ["casual", "friendly", "young", "male"],
+    "isPublic": true,
+    "downloadCount": 892,
+    "rating": 4.6,
+    "config": {
+      "appearance": {
+        "gender": "male",
+        "age": 28,
+        "ethnicity": "mixed",
+        "bodyType": "athletic",
+        "height": 180,
+        "weight": 75
+      },
+      "facial": {
+        "faceShape": "square",
+        "skinTone": "medium",
+        "eyeColor": "brown",
+        "eyeShape": "round",
+        "eyebrowStyle": "thick",
+        "noseShape": "wide",
+        "mouthShape": "full",
+        "jawline": "strong",
+        "cheekbones": "prominent"
+      },
+      "hair": {
+        "style": "short_casual",
+        "color": "black",
+        "length": "short",
+        "texture": "wavy"
+      },
+      "clothing": {
+        "style": "casual",
+        "top": "polo_shirt",
+        "bottom": "jeans",
+        "shoes": "sneakers",
+        "accessories": ["watch"]
+      },
+      "voice": {
+        "engine": "aws",
+        "voiceId": "Matthew",
+        "pitch": -2,
+        "speed": 1.1,
+        "accent": "american"
+      }
+    }
+  },
+  {
+    "id": "maria_educator",
+    "name": "Maria Educator",
+    "type": "3d",
+    "category": "education",
+    "thumbnailUrl": "/avatars/maria_thumb.jpg",
+    "previewUrl": "/avatars/maria_preview.mp4",
+    "description": "Warm and knowledgeable educator perfect for teaching content",
+    "tags": ["education", "teacher", "warm", "female", "hispanic"],
+    "isPublic": true,
+    "downloadCount": 2156,
+    "rating": 4.9,
+    "config": {
+      "appearance": {
+        "gender": "female",
+        "age": 38,
+        "ethnicity": "hispanic",
+        "bodyType": "average",
+        "height": 165,
+        "weight": 65
+      },
+      "facial": {
+        "faceShape": "heart",
+        "skinTone": "olive",
+        "eyeColor": "brown",
+        "eyeShape": "wide",
+        "eyebrowStyle": "arched",
+        "noseShape": "button",
+        "mouthShape": "full",
+        "jawline": "soft",
+        "cheekbones": "high"
+      },
+      "hair": {
+        "style": "shoulder_length_waves",
+        "color": "dark_brown",
+        "length": "medium",
+        "texture": "wavy"
+      },
+      "clothing": {
+        "style": "smart_casual",
+        "top": "cardigan",
+        "bottom": "skirt",
+        "shoes": "flats",
+        "accessories": ["glasses", "necklace"]
+      },
+      "voice": {
+        "engine": "azure",
+        "voiceId": "es-MX-DaliaNeural",
+        "pitch": 1,
+        "speed": 0.95,
+        "accent": "hispanic"
+      }
+    }
+  },
+  {
+    "id": "david_tech",
+    "name": "David Tech",
+    "type": "3d",
+    "category": "technology",
+    "thumbnailUrl": "/avatars/david_thumb.jpg",
+    "previewUrl": "/avatars/david_preview.mp4",
+    "description": "Tech-savvy presenter ideal for technology and software content",
+    "tags": ["technology", "developer", "modern", "male"],
+    "isPublic": true,
+    "downloadCount": 1634,
+    "rating": 4.7,
+    "config": {
+      "appearance": {
+        "gender": "male",
+        "age": 35,
+        "ethnicity": "caucasian",
+        "bodyType": "slim",
+        "height": 178,
+        "weight": 72
+      },
+      "facial": {
+        "faceShape": "rectangular",
+        "skinTone": "fair",
+        "eyeColor": "green",
+        "eyeShape": "narrow",
+        "eyebrowStyle": "straight",
+        "noseShape": "aquiline",
+        "mouthShape": "thin",
+        "jawline": "angular",
+        "cheekbones": "defined"
+      },
+      "hair": {
+        "style": "modern_short",
+        "color": "brown",
+        "length": "short",
+        "texture": "straight"
+      },
+      "clothing": {
+        "style": "tech_casual",
+        "top": "hoodie",
+        "bottom": "chinos",
+        "shoes": "sneakers",
+        "accessories": ["smartwatch"]
+      },
+      "voice": {
+        "engine": "google",
+        "voiceId": "en-US-Wavenet-D",
+        "pitch": -1,
+        "speed": 1.05,
+        "accent": "american"
+      }
+    }
+  },
+  {
+    "id": "lisa_creative",
+    "name": "Lisa Creative",
+    "type": "3d",
+    "category": "creative",
+    "thumbnailUrl": "/avatars/lisa_thumb.jpg",
+    "previewUrl": "/avatars/lisa_preview.mp4",
+    "description": "Artistic and expressive presenter for creative and design content",
+    "tags": ["creative", "artist", "designer", "female", "expressive"],
+    "isPublic": true,
+    "downloadCount": 743,
+    "rating": 4.5,
+    "config": {
+      "appearance": {
+        "gender": "female",
+        "age": 29,
+        "ethnicity": "asian",
+        "bodyType": "petite",
+        "height": 160,
+        "weight": 52
+      },
+      "facial": {
+        "faceShape": "round",
+        "skinTone": "light",
+        "eyeColor": "dark_brown",
+        "eyeShape": "large",
+        "eyebrowStyle": "bold",
+        "noseShape": "small",
+        "mouthShape": "cupid_bow",
+        "jawline": "rounded",
+        "cheekbones": "soft"
+      },
+      "hair": {
+        "style": "long_layered",
+        "color": "black_with_highlights",
+        "length": "long",
+        "texture": "straight"
+      },
+      "clothing": {
+        "style": "bohemian",
+        "top": "flowy_top",
+        "bottom": "wide_pants",
+        "shoes": "boots",
+        "accessories": ["scarf", "rings", "bracelet"]
+      },
+      "voice": {
+        "engine": "elevenlabs",
+        "voiceId": "Bella",
+        "pitch": 2,
+        "speed": 0.9,
+        "accent": "neutral"
+      }
+    }
+  },
+  {
+    "id": "robert_executive",
+    "name": "Robert Executive",
+    "type": "3d",
+    "category": "executive",
+    "thumbnailUrl": "/avatars/robert_thumb.jpg",
+    "previewUrl": "/avatars/robert_preview.mp4",
+    "description": "Distinguished executive presenter for corporate and leadership content",
+    "tags": ["executive", "leadership", "corporate", "male", "distinguished"],
+    "isPublic": true,
+    "downloadCount": 1089,
+    "rating": 4.8,
+    "config": {
+      "appearance": {
+        "gender": "male",
+        "age": 52,
+        "ethnicity": "caucasian",
+        "bodyType": "stocky",
+        "height": 185,
+        "weight": 88
+      },
+      "facial": {
+        "faceShape": "square",
+        "skinTone": "fair",
+        "eyeColor": "blue",
+        "eyeShape": "deep_set",
+        "eyebrowStyle": "thick",
+        "noseShape": "roman",
+        "mouthShape": "wide",
+        "jawline": "strong",
+        "cheekbones": "prominent"
+      },
+      "hair": {
+        "style": "salt_pepper_short",
+        "color": "gray",
+        "length": "short",
+        "texture": "straight"
+      },
+      "clothing": {
+        "style": "executive",
+        "top": "suit_jacket",
+        "bottom": "dress_pants",
+        "shoes": "oxford_shoes",
+        "accessories": ["tie", "cufflinks", "watch"]
+      },
+      "voice": {
+        "engine": "aws",
+        "voiceId": "Russell",
+        "pitch": -3,
+        "speed": 0.85,
+        "accent": "british"
+      }
+    }
+  },
+  {
+    "id": "aisha_wellness",
+    "name": "Aisha Wellness",
+    "type": "3d",
+    "category": "wellness",
+    "thumbnailUrl": "/avatars/aisha_thumb.jpg",
+    "previewUrl": "/avatars/aisha_preview.mp4",
+    "description": "Calming wellness coach perfect for health and fitness content",
+    "tags": ["wellness", "fitness", "health", "female", "african"],
+    "isPublic": true,
+    "downloadCount": 1425,
+    "rating": 4.9,
+    "config": {
+      "appearance": {
+        "gender": "female",
+        "age": 31,
+        "ethnicity": "african",
+        "bodyType": "athletic",
+        "height": 172,
+        "weight": 63
+      },
+      "facial": {
+        "faceShape": "oval",
+        "skinTone": "dark",
+        "eyeColor": "brown",
+        "eyeShape": "almond",
+        "eyebrowStyle": "natural",
+        "noseShape": "wide",
+        "mouthShape": "full",
+        "jawline": "defined",
+        "cheekbones": "high"
+      },
+      "hair": {
+        "style": "natural_curls",
+        "color": "black",
+        "length": "medium",
+        "texture": "curly"
+      },
+      "clothing": {
+        "style": "athletic",
+        "top": "sports_top",
+        "bottom": "leggings",
+        "shoes": "training_shoes",
+        "accessories": ["fitness_tracker"]
+      },
+      "voice": {
+        "engine": "azure",
+        "voiceId": "en-US-AriaNeural",
+        "pitch": 1,
+        "speed": 0.9,
+        "accent": "american"
+      }
+    }
+  },
+  {
+    "id": "kai_gaming",
+    "name": "Kai Gaming",
+    "type": "3d",
+    "category": "gaming",
+    "thumbnailUrl": "/avatars/kai_thumb.jpg",
+    "previewUrl": "/avatars/kai_preview.mp4",
+    "description": "Energetic gaming presenter for gaming and entertainment content",
+    "tags": ["gaming", "entertainment", "energetic", "male", "young"],
+    "isPublic": true,
+    "downloadCount": 2847,
+    "rating": 4.6,
+    "config": {
+      "appearance": {
+        "gender": "male",
+        "age": 24,
+        "ethnicity": "asian",
+        "bodyType": "slim",
+        "height": 175,
+        "weight": 68
+      },
+      "facial": {
+        "faceShape": "oval",
+        "skinTone": "medium",
+        "eyeColor": "brown",
+        "eyeShape": "monolid",
+        "eyebrowStyle": "straight",
+        "noseShape": "button",
+        "mouthShape": "medium",
+        "jawline": "soft",
+        "cheekbones": "subtle"
+      },
+      "hair": {
+        "style": "trendy_medium",
+        "color": "black_with_blue",
+        "length": "medium",
+        "texture": "straight"
+      },
+      "clothing": {
+        "style": "streetwear",
+        "top": "graphic_tee",
+        "bottom": "joggers",
+        "shoes": "high_tops",
+        "accessories": ["headphones", "chain"]
+      },
+      "voice": {
+        "engine": "elevenlabs",
+        "voiceId": "Josh",
+        "pitch": 0,
+        "speed": 1.2,
+        "accent": "american"
+      }
+    }
+  }
+]
