@@ -1,0 +1,320 @@
+{
+  "summary": {
+    "total_docs": 23,
+    "total_tasks": 51,
+    "by_priority": {
+      "alta": 2,
+      "media": 7,
+      "baixa": 42
+    },
+    "generated_at": "2025-10-09T03:38:33.620Z"
+  },
+  "tasks": [
+    {
+      "id": "DOC3_T6",
+      "title": "*Objetivo**: Definir arquitetura técnica para eliminar mocks e implementar funcionalidades reais",
+      "source_doc": "ARQUITETURA_TECNICA_IMPLEMENTACAO.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC4_T111",
+      "title": "*Criar projeto integrado**",
+      "source_doc": "ARQUITETURA_TECNICA_SISTEMA_INTEGRADO.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC4_T417",
+      "title": "- Criar tabela de usuários",
+      "source_doc": "ARQUITETURA_TECNICA_SISTEMA_INTEGRADO.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC4_T436",
+      "title": "- Criar tabela de projetos",
+      "source_doc": "ARQUITETURA_TECNICA_SISTEMA_INTEGRADO.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC4_T458",
+      "title": "- Criar tabela de jobs de renderização",
+      "source_doc": "ARQUITETURA_TECNICA_SISTEMA_INTEGRADO.md",
+      "priority": "media"
+    },
+    {
+      "id": "DOC5_T89",
+      "title": "*Criar Projeto**",
+      "source_doc": "DASHBOARD_UNIFICADO_ARQUITETURA_TECNICA_AVANCADA.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC5_T125",
+      "title": "*Atualizar Projeto**",
+      "source_doc": "DASHBOARD_UNIFICADO_ARQUITETURA_TECNICA_AVANCADA.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC6_T8",
+      "title": "**Objetivo Principal**: Criar uma plataforma completa e integrada para produção de vídeos educacionais de alta qualidade com compliance automático às normas regulamentadoras brasileiras.",
+      "source_doc": "DASHBOARD_UNIFICADO_FUNCIONALIDADES_AVANCADAS_PRD.md",
+      "priority": "alta"
+    },
+    {
+      "id": "DOC6_T168",
+      "title": "**Time to First Value**: < 5 minutos para criar primeiro projeto",
+      "source_doc": "DASHBOARD_UNIFICADO_FUNCIONALIDADES_AVANCADAS_PRD.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC8_T189",
+      "title": "*Objetivo**: Implementar parsing REAL de PPTX com extração de texto, imagens, layouts e metadados reais.",
+      "source_doc": "DOCUMENTO_IMPLEMENTACAO_TECNICA_100_REAL.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC8_T209",
+      "title": "*Objetivo**: Implementar render REAL de vídeos com FFmpeg e processamento de fila com Redis.",
+      "source_doc": "DOCUMENTO_IMPLEMENTACAO_TECNICA_100_REAL.md",
+      "priority": "media"
+    },
+    {
+      "id": "DOC8_T230",
+      "title": "*Objetivo**: Implementar validação NR real com análise semântica usando GPT-4.",
+      "source_doc": "DOCUMENTO_IMPLEMENTACAO_TECNICA_100_REAL.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC8_T249",
+      "title": "*Objetivo**: Eliminar todos os dados mock do analytics e implementar queries reais.",
+      "source_doc": "DOCUMENTO_IMPLEMENTACAO_TECNICA_100_REAL.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC8_T270",
+      "title": "*Objetivo**: Implementar timeline avançada estilo Adobe Premiere.",
+      "source_doc": "DOCUMENTO_IMPLEMENTACAO_TECNICA_100_REAL.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC8_T289",
+      "title": "*Objetivo**: Implementar avatares 3D reais com assets no S3.",
+      "source_doc": "DOCUMENTO_IMPLEMENTACAO_TECNICA_100_REAL.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC8_T308",
+      "title": "*Objetivo**: Implementar voice cloning real com ElevenLabs.",
+      "source_doc": "DOCUMENTO_IMPLEMENTACAO_TECNICA_100_REAL.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC8_T329",
+      "title": "*Objetivo**: Implementar colaboração real-time com WebSocket.",
+      "source_doc": "DOCUMENTO_IMPLEMENTACAO_TECNICA_100_REAL.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC8_T637",
+      "title": "Testar com 20+ PPTXs reais diversos",
+      "source_doc": "DOCUMENTO_IMPLEMENTACAO_TECNICA_100_REAL.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC8_T638",
+      "title": "Implementar fallback para formatos não suportados",
+      "source_doc": "DOCUMENTO_IMPLEMENTACAO_TECNICA_100_REAL.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC8_T646",
+      "title": "Otimizar configurações FFmpeg",
+      "source_doc": "DOCUMENTO_IMPLEMENTACAO_TECNICA_100_REAL.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC8_T647",
+      "title": "Implementar paralelização",
+      "source_doc": "DOCUMENTO_IMPLEMENTACAO_TECNICA_100_REAL.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC8_T679",
+      "title": "Implementar versão básica primeiro",
+      "source_doc": "DOCUMENTO_IMPLEMENTACAO_TECNICA_100_REAL.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC8_T687",
+      "title": "Testar extensivamente",
+      "source_doc": "DOCUMENTO_IMPLEMENTACAO_TECNICA_100_REAL.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC8_T689",
+      "title": "Implementar quality scoring",
+      "source_doc": "DOCUMENTO_IMPLEMENTACAO_TECNICA_100_REAL.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC8_T767",
+      "title": "*Implementar**: FASES 1-4",
+      "source_doc": "DOCUMENTO_IMPLEMENTACAO_TECNICA_100_REAL.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC8_T779",
+      "title": "*Implementar**: FASES 1-10",
+      "source_doc": "DOCUMENTO_IMPLEMENTACAO_TECNICA_100_REAL.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC8_T793",
+      "title": "*Você escolhe** quais fases implementar",
+      "source_doc": "DOCUMENTO_IMPLEMENTACAO_TECNICA_100_REAL.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC8_T802",
+      "title": "[ ] Configurar repositório Git com branches",
+      "source_doc": "DOCUMENTO_IMPLEMENTACAO_TECNICA_100_REAL.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC8_T804",
+      "title": "[ ] Configurar CI/CD pipeline",
+      "source_doc": "DOCUMENTO_IMPLEMENTACAO_TECNICA_100_REAL.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC8_T807",
+      "title": "[ ] Configurar Redis em produção",
+      "source_doc": "DOCUMENTO_IMPLEMENTACAO_TECNICA_100_REAL.md",
+      "priority": "alta"
+    },
+    {
+      "id": "DOC8_T810",
+      "title": "[ ] Configurar ElevenLabs account",
+      "source_doc": "DOCUMENTO_IMPLEMENTACAO_TECNICA_100_REAL.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC8_T817",
+      "title": "[ ] Configurar comunicação",
+      "source_doc": "DOCUMENTO_IMPLEMENTACAO_TECNICA_100_REAL.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC9_T105",
+      "title": "*Objetivo**: Criar um ponto único de entrada para todos os módulos",
+      "source_doc": "ESPECIFICACOES_IMPLEMENTACAO_INTEGRADA.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC14_T644",
+      "title": "*Próximos Passos**: Após a conclusão da FASE 1, seguir para a **FASE 2: Render Queue Real** para implementar geração real de vídeos com FFmpeg.",
+      "source_doc": "FASE1_PPTX_PROCESSING_REAL_TECHNICAL_SPEC.md",
+      "priority": "media"
+    },
+    {
+      "id": "DOC15_T145",
+      "title": "*Criar Voz Clonada**",
+      "source_doc": "FASE2_ARQUITETURA_TECNICA.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC18_T79",
+      "title": "*Objetivo**: Integrar completamente NVIDIA Audio2Face OSS",
+      "source_doc": "FASE2_PLANO_IMPLEMENTACAO.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC18_T115",
+      "title": "*Objetivo**: Otimizar pipeline UE5 para renderização em lote",
+      "source_doc": "FASE2_PLANO_IMPLEMENTACAO.md",
+      "priority": "media"
+    },
+    {
+      "id": "DOC18_T129",
+      "title": "- Configurar templates de renderização",
+      "source_doc": "FASE2_PLANO_IMPLEMENTACAO.md",
+      "priority": "media"
+    },
+    {
+      "id": "DOC18_T146",
+      "title": "*Objetivo**: Implementar galeria completa de avatares brasileiros",
+      "source_doc": "FASE2_PLANO_IMPLEMENTACAO.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC18_T170",
+      "title": "*Avatares a Implementar:**",
+      "source_doc": "FASE2_PLANO_IMPLEMENTACAO.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC18_T184",
+      "title": "*Objetivo**: Implementar sistema completo de voice cloning",
+      "source_doc": "FASE2_PLANO_IMPLEMENTACAO.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC19_T64",
+      "title": "*Objetivo**: Integrar completamente NVIDIA Audio2Face OSS",
+      "source_doc": "FASE2_RESUMO_EXECUTIVO.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC19_T71",
+      "title": "*Objetivo**: Otimizar pipeline UE5 para renderização em lote",
+      "source_doc": "FASE2_RESUMO_EXECUTIVO.md",
+      "priority": "media"
+    },
+    {
+      "id": "DOC19_T78",
+      "title": "*Objetivo**: Implementar galeria completa de avatares brasileiros",
+      "source_doc": "FASE2_RESUMO_EXECUTIVO.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC21_T18",
+      "title": "Implementar parsing real de arquivos PPTX",
+      "source_doc": "Plano_Implementacao_Funcionalidades_Reais.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC21_T25",
+      "title": "*Task 1.1: Configurar Biblioteca PPTX**",
+      "source_doc": "Plano_Implementacao_Funcionalidades_Reais.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC21_T32",
+      "title": "*Task 1.2: Implementar Parser Real**",
+      "source_doc": "Plano_Implementacao_Funcionalidades_Reais.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC21_T97",
+      "title": "Implementar fila real de renderização com Redis",
+      "source_doc": "Plano_Implementacao_Funcionalidades_Reais.md",
+      "priority": "media"
+    },
+    {
+      "id": "DOC21_T210",
+      "title": "Integrar com serviços reais de avatar 3D",
+      "source_doc": "Plano_Implementacao_Funcionalidades_Reais.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC21_T272",
+      "title": "Implementar clonagem real com ElevenLabs",
+      "source_doc": "Plano_Implementacao_Funcionalidades_Reais.md",
+      "priority": "baixa"
+    },
+    {
+      "id": "DOC23_T5",
+      "title": "*Estúdio IA Vídeos** é uma plataforma integrada que permite aos usuários criar vídeos profissionais a partir de apresentações PowerPoint, combinando edição avançada, avatares 3D hiper-realistas e síntese de voz em um fluxo de trabalho contínuo e unificado. O sistema elimina a necessidade de ferramentas separadas, oferecendo uma experiência completa desde a importação até a exportação final.",
+      "source_doc": "PRD_SISTEMA_INTEGRADO_UNIFICADO.md",
+      "priority": "baixa"
+    }
+  ]
+}

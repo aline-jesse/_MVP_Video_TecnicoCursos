@@ -1,0 +1,184 @@
+{
+  "generated_at": "2025-10-09T03:38:32.423Z",
+  "coverage_total": 100,
+  "items": [
+    {
+      "name": "Dashboard Unificado",
+      "score": 100,
+      "checks": [
+        {
+          "path": [
+            "estudio_ia_videos",
+            "app",
+            "dashboard"
+          ],
+          "exists": true
+        },
+        {
+          "path": [
+            "estudio_ia_videos",
+            "app",
+            "page.tsx"
+          ],
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "Studio Integrado",
+      "score": 100,
+      "checks": [
+        {
+          "path": [
+            "estudio_ia_videos",
+            "app",
+            "components"
+          ],
+          "exists": true
+        },
+        {
+          "path": [
+            "estudio_ia_videos",
+            "app",
+            "lib"
+          ],
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "Biblioteca de Assets",
+      "score": 100,
+      "checks": [
+        {
+          "path": [
+            "estudio_ia_videos",
+            "app",
+            "components"
+          ],
+          "exists": true
+        },
+        {
+          "path": [
+            "estudio_ia_videos",
+            "app",
+            "public"
+          ],
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "Centro de Renderização",
+      "score": 100,
+      "checks": [
+        {
+          "path": [
+            "estudio_ia_videos",
+            "app",
+            "workers"
+          ],
+          "exists": true
+        },
+        {
+          "path": [
+            "estudio_ia_videos",
+            "app",
+            "server"
+          ],
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "Analytics e Relatórios",
+      "score": 100,
+      "checks": [
+        {
+          "path": [
+            "estudio_ia_videos",
+            "app",
+            "dashboard"
+          ],
+          "exists": true
+        },
+        {
+          "path": [
+            "estudio_ia_videos",
+            "app",
+            "compliance"
+          ],
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "Compliance NR",
+      "score": 100,
+      "checks": [
+        {
+          "path": [
+            "estudio_ia_videos",
+            "app",
+            "compliance"
+          ],
+          "exists": true
+        },
+        {
+          "path": [
+            "estudio_ia_videos",
+            "app",
+            "components",
+            "nr"
+          ],
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "Avatares 3D",
+      "score": 100,
+      "checks": [
+        {
+          "path": [
+            "estudio_ia_videos",
+            "app",
+            "components",
+            "avatars"
+          ],
+          "exists": true
+        },
+        {
+          "path": [
+            "avatar-pipeline",
+            "services",
+            "a2f"
+          ],
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "TTS e Voice Cloning",
+      "score": 100,
+      "checks": [
+        {
+          "path": [
+            "avatar-pipeline",
+            "services",
+            "tts"
+          ],
+          "exists": true
+        },
+        {
+          "path": [
+            "estudio_ia_videos",
+            "app",
+            "services"
+          ],
+          "exists": true
+        }
+      ]
+    }
+  ]
+}

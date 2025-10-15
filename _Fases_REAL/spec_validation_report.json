@@ -1,0 +1,53 @@
+{
+  "generated_at": "2025-10-09T03:38:31.913Z",
+  "overall_ok": false,
+  "items": [
+    {
+      "doc": "PRD_SISTEMA_INTEGRADO_UNIFICADO.md",
+      "ok": true,
+      "checks": {
+        "exists": true,
+        "minLength": true,
+        "headings": {
+          "Product Overview": true,
+          "Core Features": true,
+          "Core Process": true,
+          "User Interface Design": true
+        }
+      }
+    },
+    {
+      "doc": "ARQUITETURA_TECNICA_IMPLEMENTACAO.md",
+      "ok": false,
+      "checks": {
+        "exists": true,
+        "minLength": true,
+        "hasArquitetura": true,
+        "hasSec": true,
+        "hasTest": false
+      }
+    },
+    {
+      "doc": "ESPECIFICACOES_TECNICAS_DETALHADAS.md",
+      "ok": false,
+      "checks": {
+        "exists": true,
+        "minLength": true,
+        "hasArquitetura": false,
+        "hasSec": true,
+        "hasTest": true
+      }
+    },
+    {
+      "doc": "Plano_Implementacao_Funcionalidades_Reais.md",
+      "ok": false,
+      "checks": {
+        "exists": true,
+        "minLength": true,
+        "hasArquitetura": false,
+        "hasSec": true,
+        "hasTest": true
+      }
+    }
+  ]
+}
