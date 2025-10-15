@@ -1,0 +1,96 @@
+{
+  "timestamp": "2025-10-11T00:59:02.106Z",
+  "metrics": {
+    "database": {
+      "avgQueryTime": 526.5714285714286,
+      "slowQueries": [
+        {
+          "query": "SELECT count(*) FROM users",
+          "duration": 1334,
+          "table": "users",
+          "recommendation": "Adicionar índice na tabela users"
+        }
+      ],
+      "connectionPoolSize": 10,
+      "indexUsage": 85,
+      "score": 50
+    },
+    "api": {
+      "avgResponseTime": 213.33333333333334,
+      "p95ResponseTime": 320,
+      "slowEndpoints": [
+        {
+          "endpoint": "/api/videos/render",
+          "avgTime": 2500,
+          "requests": 100,
+          "recommendation": "Considerar processamento assíncrono (background jobs)"
+        }
+      ],
+      "score": 85
+    },
+    "bundle": {
+      "totalSize": 11490355,
+      "jsSize": 11490355,
+      "cssSize": 0,
+      "largestChunks": [
+        {
+          "name": "main-app.js",
+          "size": 6026973,
+          "gzipSize": 1808092,
+          "recommendation": "Considerar code splitting ou lazy loading"
+        },
+        {
+          "name": "main.js",
+          "size": 5075101,
+          "gzipSize": 1522530,
+          "recommendation": "Considerar code splitting ou lazy loading"
+        },
+        {
+          "name": "app-pages-internals.js",
+          "size": 136133,
+          "gzipSize": 40840,
+          "recommendation": "Chunk grande - verificar se pode ser otimizado"
+        },
+        {
+          "name": "polyfills.js",
+          "size": 112594,
+          "gzipSize": 33778,
+          "recommendation": "Chunk grande - verificar se pode ser otimizado"
+        }
+      ],
+      "score": 40
+    },
+    "overall": {
+      "score": 58,
+      "grade": "F",
+      "recommendations": [
+        "🗃️  Otimizar queries do database (adicionar índices, usar cache)",
+        "📦 Reduzir tamanho do bundle (code splitting, lazy loading)",
+        "🐌 Resolver 1 queries lentas no database",
+        "🐌 Otimizar 1 endpoints lentos da API",
+        "📦 Dividir chunks grandes em módulos menores"
+      ]
+    }
+  },
+  "summary": {
+    "overallScore": 58,
+    "grade": "F",
+    "database": {
+      "score": 50,
+      "avgQueryTime": 526.5714285714286,
+      "slowQueriesCount": 1
+    },
+    "api": {
+      "score": 85,
+      "avgResponseTime": 213.33333333333334,
+      "p95ResponseTime": 320,
+      "slowEndpointsCount": 1
+    },
+    "bundle": {
+      "score": 40,
+      "totalSizeMB": 10.958056449890137,
+      "jsSizeMB": 10.958056449890137,
+      "largeChunksCount": 4
+    }
+  }
+}
