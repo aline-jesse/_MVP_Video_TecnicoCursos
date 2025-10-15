@@ -1,0 +1,39 @@
+{
+  "name": "mvp-video-tecnico-cursos-v7",
+  "version": "1.0.0",
+  "description": "Sistema de Produção de Vídeos - Testes de Integração",
+  "type": "module",
+  "scripts": {
+    "test:database": "node scripts/validate-database-setup.js",
+    "test:integration": "node scripts/test-integration-complete.js",
+    "test:tts": "node test-tts-integration.js",
+    "test:e2e": "node test-end-to-end.js",
+    "test:all": "node run-all-tests.js",
+    "setup:supabase": "node --loader ts-node/esm --no-warnings scripts/setup-supabase-auto.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.75.0",
+    "axios": "^1.12.2",
+    "chalk": "^5.6.2",
+    "dotenv": "^17.2.3",
+    "kysely": "^0.28.8",
+    "node-fetch": "^3.3.2",
+    "pg": "^8.16.3",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/pg": "^8.15.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "video-production",
+    "supabase",
+    "tts",
+    "integration-tests"
+  ],
+  "author": "Sistema de Produção de Vídeos",
+  "license": "MIT"
+}

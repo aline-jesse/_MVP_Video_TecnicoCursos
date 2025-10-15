@@ -1,0 +1,94 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Dependencies
+/node_modules
+/scripts/node_modules
+/estudio_ia_videos/node_modules
+**/node_modules
+/.pnp
+.pnp.js
+
+# Testing
+/coverage
+
+# Next.js build output
+/.next/
+/out/
+
+# Production
+/build
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dev-output.log
+
+# Local .env files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDEs and editors
+/.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Environment files
+.env
+.env.backup*
+
+# TypeScript
+*.tsbuildinfo
+.next/types/
+
+# Uploads and temp directories
+/Uploads/
+/_next_temp/
+/_build_old_temp/
+/_archived_temp/
+/_apis_disabled/
+
+# Test outputs
+/test-output/
+/test-outputs/
+/test-logs/
+/coverage/
+
+# Logs
+/logs/
+*.log
+
+# Reports
+/reports/
+
+# Cache
+/cache/
+/.cache/
+
+# Deployment backups
+.deployment-backups/
+
+# Database dumps and audit files
+supabase-audit.json
+setup-status.jsonestudio_ia_videos/app/app/nul
