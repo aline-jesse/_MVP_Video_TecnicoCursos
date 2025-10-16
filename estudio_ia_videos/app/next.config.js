@@ -29,12 +29,13 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https:",
               "font-src 'self' data:",
-              "connect-src 'self' ws: wss: https: http://localhost:* http://127.0.0.1:*",
+              "connect-src 'self' ws: wss: https: http://localhost:* http://127.0.0.1:* https://*.supabase.co",
               "media-src 'self' blob: data:",
               "worker-src 'self' blob:",
               "frame-src 'self'",
               "object-src 'none'",
-              "base-uri 'self'"
+              "base-uri 'self'",
+              "manifest-src 'self'"
             ].join('; ')
           },
           {
