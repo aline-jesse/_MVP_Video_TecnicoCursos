@@ -85,10 +85,17 @@ Thumbs.db
 # Cache
 /cache/
 /.cache/
+**/.next/cache/
+**/cache/webpack/
+
+# Core dumps and large binaries
+**/core
+*.core
 
 # Deployment backups
 .deployment-backups/
 
 # Database dumps and audit files
 supabase-audit.json
-setup-status.jsonestudio_ia_videos/app/app/nul
+setup-status.json
+estudio_ia_videos/app/app/nul
