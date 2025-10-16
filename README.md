@@ -1,4 +1,37 @@
-# 🎬 MVP Video Técnico Cursos v7
+# 🎬 MVP Video TécnicoCursos v7
+
+> **Plataforma completa para geração automatizada de vídeos técnicos a partir de apresentações PowerPoint**
+
+[![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-Database-green)](https://supabase.com/)
+[![Remotion](https://img.shields.io/badge/Remotion-Video-purple)](https://www.remotion.dev/)
+
+---
+
+## 🚀 Quick Start
+
+```bash
+# Clone o repositório
+git clone https://github.com/aline-jesse/_MVP_Video_TecnicoCursos.git
+cd _MVP_Video_TecnicoCursos
+
+# Execute o setup automático
+./setup-project.ps1
+
+# Configure o Supabase
+npm run setup:supabase
+
+# Inicie o desenvolvimento
+cd estudio_ia_videos/app
+npm run dev
+```
+
+Acesse: **http://localhost:3000**
+
+---
+
+# MVP Video TécnicoCursos v7
 
 **Versão**: 2.0 Production-Ready  
 **Status**: ✅ **100% COMPLETO E OPERACIONAL**  
